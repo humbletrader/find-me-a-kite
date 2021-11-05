@@ -33,4 +33,10 @@ public class FindController {
         logger.info("retrieving brands for category {} ...", category);
         return new ResponseEntity<>(findService.findBrandsInCategory(category), HttpStatus.OK);
     }
+
+    @GetMapping(path = "/productByName")
+    public ResponseEntity<Iterable<Product>> retrieveProduct() {
+        logger.info("retrieving product by name {} ...");
+        return new ResponseEntity<>(findService.findByName("brand", "name"), HttpStatus.OK);
+    }
 }
