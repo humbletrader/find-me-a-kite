@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/find-me-a-kite")
+@RequestMapping(path = "/")
 public class FindController {
 
     private static final Logger logger = LoggerFactory.getLogger(FindController.class);
@@ -27,6 +27,7 @@ public class FindController {
         List<Product> result = new ArrayList<>();
         result.add(new Product("Switchblade", "Cabrinha"));
         result.add(new Product("Lithium", "Airush"));
+        result.add(new Product("Evo", "Duotone"));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
