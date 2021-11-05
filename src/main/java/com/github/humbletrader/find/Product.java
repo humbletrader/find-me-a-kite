@@ -1,4 +1,4 @@
-package com.github.humbletrader.controllers;
+package com.github.humbletrader.find;
 
 public class Product {
 
