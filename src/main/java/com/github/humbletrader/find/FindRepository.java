@@ -18,7 +18,7 @@ public class FindRepository {
 
     public List<Product> findProductsByName(String name){
         return jdbcTemplate.queryForList(
-                "SELECT * FROM PRODUCTS",
+                "SELECT brand, name, version , link, category FROM PRODUCTS",
                 Product.class);
     }
 

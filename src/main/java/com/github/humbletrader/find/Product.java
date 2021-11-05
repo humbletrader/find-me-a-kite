@@ -3,12 +3,14 @@ package com.github.humbletrader.find;
 public class Product {
 
     @Deprecated
-    private final String brandAndNameAndVersion;
-    private final String brand;
-    private final String name;
-    private final String version;
-    private final String link;
-    private final String category;
+    private String brandAndNameAndVersion;
+    private String brand;
+    private String name;
+    private String version;
+    private String link;
+    private String category;
+
+    public Product(){}
 
     @Deprecated
     public Product(String brandAndNameAndVersion,
@@ -60,6 +62,30 @@ public class Product {
 
     public String getCategory() {
         return category;
+    }
+
+    public void setBrandAndNameAndVersion(String brandAndNameAndVersion) {
+        this.brandAndNameAndVersion = brandAndNameAndVersion;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override
