@@ -1,5 +1,6 @@
 package com.github.humbletrader.find;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,9 +18,9 @@ public class FindRepository {
     }
 
     public List<Product> findProductsByName(String name){
-        return jdbcTemplate.queryForList(
+        return jdbcTemplate.query(
                 "SELECT brand, name, version , link, category FROM PRODUCTS",
-                Product.class);
+                new BeanPropertyRowMapper<>(Product.class));
     }
 
 }
