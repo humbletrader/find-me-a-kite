@@ -16,10 +16,10 @@ public class FindRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<String> listBrandsInCategory(){
-        jdbcTemplate.queryForObject(
+    public List<Product> findProductsByName(String name){
+        return jdbcTemplate.queryForList(
                 "SELECT * FROM PRODUCTS",
-                (rs, rowId) -> new Product(rs.getString("name"), rs.getString("brand")));
+                Product.class);
     }
 
 }
