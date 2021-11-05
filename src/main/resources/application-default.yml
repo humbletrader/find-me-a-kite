@@ -1,3 +1,28 @@
 # production server properties
 server:
   port: ${PORT:5000}
+
+#postgres database properties
+spring :
+  datasource :
+    driverClassName: org.postgresql.Driver
+    url: ${JDBC_DATABASE_URL}
+    #    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    maxActive : 10
+    maxIdle : 5
+    minIdle : 2
+    initialSize : 5
+    removeAbandoned : true
+
+
+# actuator properties
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
