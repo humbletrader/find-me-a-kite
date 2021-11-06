@@ -4,21 +4,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 @RequestMapping(path = "/")
-public class FindController {
+public class SearchController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FindController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
-    private FindService findService;
+    private SearchService findService;
 
-    public FindController(FindService findService) {
+    public SearchController(SearchService findService) {
         this.findService = findService;
     }
 
@@ -34,9 +31,9 @@ public class FindController {
         return new ResponseEntity<>(findService.findBrandsInCategory(category), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/productByName")
-    public ResponseEntity<Iterable<Product>> retrieveProduct() {
-        logger.info("retrieving product by name {} ...");
-        return new ResponseEntity<>(findService.findByName("brand", "name"), HttpStatus.OK);
+    @PostMapping(path = "/search")
+    public ResponseEntity<Iterable<SearchResult>> retrieveProduct(@RequestBody SearchCriteria criteria) {
+        logger.info("searching products by {} ", criteria);
+        return new ResponseEntity<>(findService.searchByCriteria(criteria), HttpStatus.OK);
     }
 }

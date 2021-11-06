@@ -10,12 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class FindService {
+public class SearchService {
 
-    private static final Logger logger = LoggerFactory.getLogger(FindService.class);
+    private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
 
     @Autowired
-    private FindRepository findRepository;
+    private SearchRepository searchRepository;
 
     public List<String> findCategories(){
         logger.info("servicing supported categories ...");
@@ -29,19 +29,9 @@ public class FindService {
         return result;
     }
 
-    public List<Product> findByName(String brand, String name){
-        logger.info("searching products by name {} and brand {}", name, brand);
-        return findRepository.findProductsByName(name);
-    }
-
-    public List<Product> findByNameAndSize(String brand, String name, String size) {
-        List<Product> result = new ArrayList<>();
-        return result;
-    }
-
-    public List<Product> findByNameAndColor(String brand, String name, String color){
-        List<Product> result = new ArrayList<>();
-        return result;
+    public List<SearchResult> searchByCriteria(SearchCriteria criteria){
+        logger.info("searching products by criteria {} ", criteria);
+        return searchRepository.searchByCriteria(criteria);
     }
 
 }
