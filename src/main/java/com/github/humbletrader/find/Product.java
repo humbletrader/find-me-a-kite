@@ -10,8 +10,6 @@ public class Product {
     private String link;
     private String category;
 
-    public Product(){}
-
     @Deprecated
     public Product(String brandAndNameAndVersion,
                    String brand,
@@ -62,30 +60,6 @@ public class Product {
 
     public String getCategory() {
         return category;
-    }
-
-    public void setBrandAndNameAndVersion(String brandAndNameAndVersion) {
-        this.brandAndNameAndVersion = brandAndNameAndVersion;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     @Override

@@ -20,7 +20,13 @@ public class FindRepository {
     public List<Product> findProductsByName(String name){
         return jdbcTemplate.query(
                 "SELECT brand, name, version , link, category FROM PRODUCTS",
-                new BeanPropertyRowMapper<>(Product.class));
+                (resultSet, rowCount) ->
+                        new Product(
+                                resultSet.getString(1),
+                                resultSet.getString(2),
+                                resultSet.getString(3),
+                                resultSet.getString(4),
+                                resultSet.getString(5)));
     }
 
 }
