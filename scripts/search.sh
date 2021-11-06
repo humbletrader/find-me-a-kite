@@ -9,4 +9,4 @@ printf "\n**********************************************************\n"
 curl -v http://$APP_HOST:$APP_PORT/search \
      --header "Content-Type: application/json" \
      --request POST \
-     --data '{"category": "KITES", "brand": "Cabrinha", "productName": "Switchblade", "productVersion": "2020", "size": "12", "color" : "yellow"}'
+     --data '{"category": "KITES", "brand": "Cabrinha", "productName": "Switchblade", "productVersion": "2020", "size": "12", "color" : "yellow", "page": 0}'

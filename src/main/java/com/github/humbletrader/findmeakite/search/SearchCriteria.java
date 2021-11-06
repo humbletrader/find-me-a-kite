@@ -10,10 +10,6 @@ public class SearchCriteria {
     private String color;
     private int page;
 
-    public SearchCriteria(String category, String brand, String productName, String productVersion, String size, String color) {
-        this(category, brand, productName, productVersion, size, color, 0);
-    }
-
     public SearchCriteria(String category, String brand, String productName, String productVersion, String size, String color, int page) {
         this.category = category;
         this.brand = brand;
