@@ -1,4 +1,4 @@
-package com.github.humbletrader.findmeakite;
+package com.github.humbletrader.findmeakite.search;
 
 public class SearchResult {
 

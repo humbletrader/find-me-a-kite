@@ -1,4 +1,4 @@
-package com.github.humbletrader.findmeakite;
+package com.github.humbletrader.findmeakite.search;
 
 public class SearchCriteria {
 
@@ -8,14 +8,20 @@ public class SearchCriteria {
     private String productVersion;
     private String size;
     private String color;
+    private int page;
 
     public SearchCriteria(String category, String brand, String productName, String productVersion, String size, String color) {
+        this(category, brand, productName, productVersion, size, color, 0);
+    }
+
+    public SearchCriteria(String category, String brand, String productName, String productVersion, String size, String color, int page) {
         this.category = category;
         this.brand = brand;
         this.productName = productName;
         this.productVersion = productVersion;
         this.size = size;
         this.color = color;
+        this.page = page;
     }
 
     public String getCategory() {
@@ -40,5 +46,9 @@ public class SearchCriteria {
 
     public String getColor() {
         return color;
+    }
+
+    public int getPage() {
+        return page;
     }
 }

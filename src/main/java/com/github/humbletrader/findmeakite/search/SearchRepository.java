@@ -1,4 +1,4 @@
-package com.github.humbletrader.findmeakite;
+package com.github.humbletrader.findmeakite.search;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,11 +14,11 @@ public class SearchRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SearchResult> searchByCriteria(SearchCriteria criteria){
+    public List<SearchResult> pagedSearchByCriteria(SearchCriteria criteria, int startOfPage, int resultsPerPage){
         return jdbcTemplate.query(
-                "SELECT name, link FROM PRODUCTS",
-                (rs, rowCount) ->
-                        new SearchResult(rs.getString(1), rs.getString(2))
+                "SELECT name, link FROM PRODUCTS order by id LIMIT ? OFFSET ?",
+                (rs, rowCount) -> new SearchResult(rs.getString(1), rs.getString(2)),
+                resultsPerPage, startOfPage
         );
     }
 

@@ -1,5 +1,6 @@
-package com.github.humbletrader.findmeakite;
+package com.github.humbletrader.findmeakite.search;
 
+import com.github.humbletrader.findmeakite.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import java.util.List;
 public class SearchService {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
+
+    public final static int ROWS_PER_PAGE = 20;
 
     @Autowired
     private SearchRepository searchRepository;
@@ -31,7 +34,12 @@ public class SearchService {
 
     public List<SearchResult> searchByCriteria(SearchCriteria criteria){
         logger.info("searching products by criteria {} ", criteria);
-        return searchRepository.searchByCriteria(criteria);
+        int startOfPage = criteria.getPage() * ROWS_PER_PAGE;
+        int rowsPerPage = ROWS_PER_PAGE;
+
+        logger.info("asking database for page {} from start {} a number of {}", criteria.getPage(), startOfPage, rowsPerPage);
+
+        return searchRepository.pagedSearchByCriteria(criteria, startOfPage, rowsPerPage);
     }
 
 }

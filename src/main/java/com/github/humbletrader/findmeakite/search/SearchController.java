@@ -1,5 +1,6 @@
-package com.github.humbletrader.findmeakite;
+package com.github.humbletrader.findmeakite.search;
 
+import com.github.humbletrader.findmeakite.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
