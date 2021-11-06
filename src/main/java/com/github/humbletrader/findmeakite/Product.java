@@ -1,4 +1,4 @@
-package com.github.humbletrader.find;
+package com.github.humbletrader.findmeakite;
 
 public class Product {
 

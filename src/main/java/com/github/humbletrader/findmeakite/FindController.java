@@ -1,4 +1,4 @@
-package com.github.humbletrader.find;
+package com.github.humbletrader.findmeakite;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

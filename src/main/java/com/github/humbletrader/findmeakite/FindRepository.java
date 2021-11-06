@@ -1,9 +1,6 @@
-package com.github.humbletrader.find;
+package com.github.humbletrader.findmeakite;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,13 +17,14 @@ public class FindRepository {
     public List<Product> findProductsByName(String name){
         return jdbcTemplate.query(
                 "SELECT brand, name, version , link, category FROM PRODUCTS",
-                (resultSet, rowCount) ->
+                (rs, rowCount) ->
                         new Product(
-                                resultSet.getString(1),
-                                resultSet.getString(2),
-                                resultSet.getString(3),
-                                resultSet.getString(4),
-                                resultSet.getString(5)));
+                                rs.getString(1),
+                                rs.getString(2),
+                                rs.getString(3),
+                                rs.getString(4),
+                                rs.getString(5))
+        );
     }
 
 }
