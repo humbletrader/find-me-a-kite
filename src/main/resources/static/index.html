@@ -22,15 +22,16 @@
 <div class="container">
     <input type="button" onclick="find()" name="find" value="Find" />
 
-    <select name="product" onchange="blah();">
+    <select name="product" onchange="testForeach()">
         <option name="kite">kite</option>
         <option name="twintip">twintip</option>
     </select>
 
-    <div id="searchResult">
+    <div id="searchResults">
 
     </div>
 </div>
+
 
 <script>
     function find(){
@@ -55,9 +56,9 @@
     })
   // Code to run if the request succeeds (is done);
   // The response is passed to the function
-  .done(function( json ) {
-        console.log(json);
-     $( "#searchResult" ).text( json );
+  .done(function( searchResultArray ) {
+        console.log(searchResultArray);
+        searchResultArray.forEach(myFunction);
   })
   // Code to run if the request fails; the raw request and
   // status codes are passed to the function
@@ -71,6 +72,11 @@
   .always(function( xhr, status ) {
     alert( "The request is complete!" );
   });
+    }
+
+    function myFunction(item, index, arr) {
+         console.log(item);
+         $("<div>").text(item.link).appendTo("#searchResults");
     }
 </script>
 <script>
