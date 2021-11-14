@@ -26,6 +26,10 @@
         <option name="kite">kite</option>
         <option name="twintip">twintip</option>
     </select>
+
+    <div id="searchResult">
+
+    </div>
 </div>
 
 <script>
@@ -52,8 +56,8 @@
   // Code to run if the request succeeds (is done);
   // The response is passed to the function
   .done(function( json ) {
-     $( "<h1>" ).text( json.title ).appendTo( "body" );
-     $( "<div class=\"content\">").html( json.html ).appendTo( "body" );
+        console.log(json);
+     $( "#searchResult" ).text( json );
   })
   // Code to run if the request fails; the raw request and
   // status codes are passed to the function
