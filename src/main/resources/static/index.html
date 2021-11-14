@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <title>Find me a kite</title>
+</head>
+<body>
+<h1>Find me a kite </h1>
+
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+
+<div class="container">
+    <input type="button" onclick="find()" name="find" value="Find" />
+
+    <select name="product" onchange="blah();">
+        <option name="kite">kite</option>
+        <option name="twintip">twintip</option>
+    </select>
+</div>
+
+<script>
+    function find(){
+        alert("find called ");
+
+        // Using the core $.ajax() method
+    $.ajax({
+
+        // The URL for the request
+        url: "/search",
+
+        contentType : "application/json",
+
+        // The data to send (will be converted to a query string)
+        data: '{"category": "KITES", "brand": "Cabrinha", "productName": "Switchblade", "productVersion": "2020", "size": "12", "color" : "yellow", "page": 0}',
+
+         // Whether this is a POST or GET request
+        type: "POST",
+
+        // The type of data we expect back
+        dataType : "json",
+    })
+  // Code to run if the request succeeds (is done);
+  // The response is passed to the function
+  .done(function( json ) {
+     $( "<h1>" ).text( json.title ).appendTo( "body" );
+     $( "<div class=\"content\">").html( json.html ).appendTo( "body" );
+  })
+  // Code to run if the request fails; the raw request and
+  // status codes are passed to the function
+  .fail(function( xhr, status, errorThrown ) {
+    alert( "Sorry, there was a problem!" );
+    console.log( "Error: " + errorThrown );
+    console.log( "Status: " + status );
+    console.dir( xhr );
+  })
+  // Code to run regardless of success or failure;
+  .always(function( xhr, status ) {
+    alert( "The request is complete!" );
+  });
+    }
+</script>
+<script>
+    $( document ).ready(function() {
+        console.log( "document loaded" );
+    });
+
+    $( window ).on( "load", function() {
+        console.log( "window loaded" );
+    });
+    </script>
+
+</body>
+</html>
