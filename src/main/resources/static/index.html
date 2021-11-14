@@ -35,7 +35,6 @@
 
 <script>
     function find(){
-        alert("find called ");
 
         // Using the core $.ajax() method
     $.ajax({
@@ -70,7 +69,7 @@
   })
   // Code to run regardless of success or failure;
   .always(function( xhr, status ) {
-    alert( "The request is complete!" );
+    console.log( "The request is complete!" );
   });
     }
 
