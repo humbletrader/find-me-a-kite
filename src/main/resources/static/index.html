@@ -44,7 +44,7 @@
 
 <script>
     function populateProductNames(){
-        $("#name").find('option').remove().end().append('<option value="none">I don't know</option>').val('none');
+        $("#name").find('option').remove().end().append('<option value="none">none</option>').val('none');
 
         const selectedCategory = $("#category").val();
         const selectedBrand = $("#brand").val();
@@ -73,7 +73,7 @@
     }
 
     function populateBrands(){
-        $("#brand").find('option').remove().end().append('<option value="none">I don't know</option>').val('none');
+        $("#brand").find('option').remove().end().append('<option value="none">none</option>').val('none');
 
         const selectedCategory = $("#category").val();
 
