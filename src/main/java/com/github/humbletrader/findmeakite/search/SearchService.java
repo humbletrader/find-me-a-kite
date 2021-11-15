@@ -25,12 +25,7 @@ public class SearchService {
         return Arrays.asList("KITE", "TWINTIPS", "BARS", "WETSUITS");
     }
 
-    public List<Product> findBrandsInCategory(String category){
-        logger.info("servicing brands in category {} ...", category);
-        List<Product> result = new ArrayList<>();
-        result.add(new Product("Cabrinha Switchblade 2020", "Cabrinha", "switchblade", "http:url", "kites"));
-        return result;
-    }
+
 
     public List<SearchResult> searchByCriteria(SearchCriteria criteria){
         logger.info("searching products by criteria {} ", criteria);

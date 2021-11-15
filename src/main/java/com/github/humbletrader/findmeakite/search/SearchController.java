@@ -26,12 +26,6 @@ public class SearchController {
         return new ResponseEntity<>(findService.findCategories(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/brandsInCategory")
-    public ResponseEntity<Iterable<Product>> retrieveBrands(@RequestParam String category) {
-        logger.info("retrieving brands for category {} ...", category);
-        return new ResponseEntity<>(findService.findBrandsInCategory(category), HttpStatus.OK);
-    }
-
     @PostMapping(path = "/search")
     public ResponseEntity<Iterable<SearchResult>> retrieveProduct(@RequestBody SearchCriteria criteria) {
         logger.info("searching products by {} ", criteria);
