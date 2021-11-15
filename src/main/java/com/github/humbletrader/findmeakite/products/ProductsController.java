@@ -17,10 +17,17 @@ public class ProductsController {
     @Autowired
     private ProductsService service;
 
-    @GetMapping(path = "/brandsInCategory")
+    @GetMapping(path = "/brandsForCategory")
     public ResponseEntity<Iterable<String>> retrieveBrands(@RequestParam String category) {
         logger.info("retrieving brands for category {} ...", category);
         return new ResponseEntity<>(service.findBrandsForCategory(category), HttpStatus.OK);
     }
+
+    @GetMapping(path = "/namesForCategoryAndBrand")
+    public ResponseEntity<Iterable<String>> retrieveProductNamesByCategoryAndBrand(@RequestParam String category, @RequestParam String brand) {
+        logger.info("retrieving product names for category {} and brand {} ...", category, brand);
+        return new ResponseEntity<>(service.findProductNamesForCategoryAndBrand(category, brand), HttpStatus.OK);
+    }
+
 
 }

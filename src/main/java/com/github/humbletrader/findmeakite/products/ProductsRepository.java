@@ -29,4 +29,16 @@ public class ProductsRepository {
 
         return brands;
     }
+
+    public List<String> findProductNamesByCategoryAndBrand(String category, String brand){
+        List<String> names = jdbcTemplate.query(
+                "SELECT distinct name FROM PRODUCTS where category = ? and brand = ?",
+                (rs, rowCount) -> rs.getString(1),
+                category, brand
+        );
+
+        logger.info(" brands repository found {}", names.size());
+
+        return names;
+    }
 }
