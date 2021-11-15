@@ -1,6 +1,5 @@
 package com.github.humbletrader.findmeakite.products;
 
-import com.github.humbletrader.findmeakite.search.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
