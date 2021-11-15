@@ -22,7 +22,7 @@
 <div class="container">
     <input type="button" onclick="find()" name="find" value="Find" />
 
-    <select id="category" name="category" onchange="findBrands()">
+    <select id="category" name="category" onchange="populateBrands()">
         <option value="KITES" >kite</option>
         <option value="TWINTIPS">twintip</option>
         <option value="BARS">bar</option>
@@ -43,7 +43,9 @@
 
 
 <script>
-    function findProductNames(){
+    function populateProductNames(){
+        $("#name").find('option').remove().end().append('<option value="none">I don't know</option>').val('none');
+
         const selectedCategory = $("#category").val();
         const selectedBrand = $("#brand").val();
 
@@ -70,7 +72,9 @@
         $("<option>").text(item).appendTo("#name");
     }
 
-    function findBrands(){
+    function populateBrands(){
+        $("#brand").find('option').remove().end().append('<option value="none">I don't know</option>').val('none');
+
         const selectedCategory = $("#category").val();
 
         $.ajax({
