@@ -47,4 +47,17 @@ public class SearchCriteria {
     public int getPage() {
         return page;
     }
+
+    @Override
+    public String toString() {
+        return "SearchCriteria{" +
+                "category='" + category + '\'' +
+                ", brand='" + brand + '\'' +
+                ", productName='" + productName + '\'' +
+                ", productVersion='" + productVersion + '\'' +
+                ", size='" + size + '\'' +
+                ", color='" + color + '\'' +
+                ", page=" + page +
+                '}';
+    }
 }

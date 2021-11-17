@@ -48,6 +48,8 @@
 
 <script>
     function populateVersion(){
+        $("#version").find('option').remove().end().append('<option value="none">none</option>').val('none');
+
         const selectedCategory = $("#category").val();
         const selectedBrand = $("#brand").val();
         const selectedName = $("#name").val();
@@ -152,7 +154,7 @@
         }
         console.log("sending to server...");
         console.log(postData);
-        
+
         $.ajax({
                 url: "/search",
                 contentType : "application/json",
@@ -177,7 +179,7 @@
 
     function addSearchResultItem(item, index, arr) {
          console.log(item);
-         $("<div>").text(item.link).appendTo("#searchResults");
+         $("<a>").text(item.brandNameVersion).attr("href", item.link).appendTo("#searchResults");
     }
 </script>
 <script>
