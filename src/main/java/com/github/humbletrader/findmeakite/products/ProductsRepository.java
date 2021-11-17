@@ -25,7 +25,7 @@ public class ProductsRepository {
                 category
         );
 
-        logger.info(" brands repository found {}", brands.size());
+        logger.info("products repository found {} brands", brands.size());
 
         return brands;
     }
@@ -37,8 +37,19 @@ public class ProductsRepository {
                 category, brand
         );
 
-        logger.info(" brands repository found {}", names.size());
+        logger.info("product repository found {} names", names.size());
 
         return names;
+    }
+
+    public List<String> findProductVersionsByNameBrandAndCategory(String category, String brand, String name){
+        List<String> versions = jdbcTemplate.query(
+                "SELECT distinct version FROM PRODUCTS where category = ? and brand = ? and name = ?",
+                (rs, rowCount) -> rs.getString(1),
+                category, brand, name
+        );
+
+        logger.info("products repository found {} versions", versions.size());
+        return versions;
     }
 }

@@ -19,4 +19,8 @@ public class ProductsService {
         return repository.findProductNamesByCategoryAndBrand(category, brand);
     }
 
+    public List<String> findProductVersionsForNameBrandAndCategory(String category, String brand, String name){
+        return repository.findProductVersionsByNameBrandAndCategory(category, brand, name);
+    }
+
 }
