@@ -179,7 +179,9 @@
 
     function addSearchResultItem(item, index, arr) {
          console.log(item);
-         $("<a>").text(item.brandNameVersion).attr("href", item.link).appendTo("#searchResults");
+         const resultLineDiv = $("<div>");
+         $("#searchResults").append(resultLineDiv);
+         resultLineDiv.append($("<a>").text(item.brandNameVersion).attr("href", item.link));
     }
 </script>
 <script>
@@ -190,7 +192,7 @@
     $( window ).on( "load", function() {
         console.log( "window loaded" );
     });
-    </script>
+</script>
 
 </body>
 </html>
