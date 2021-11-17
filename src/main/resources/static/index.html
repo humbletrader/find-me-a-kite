@@ -141,10 +141,22 @@
         const selectedName = $("#name").val();
         const selectedVersion = $("#version").val();
 
+        const postData = {
+            "category": selectedCategory,
+            "brand": selectedBrand,
+            "productName": selectedName,
+            "productVersion": selectedVersion,
+            "size": "12",
+            "color" : "yellow",
+            "page": 0
+        }
+        console.log("sending to server...");
+        console.log(postData);
+        
         $.ajax({
                 url: "/search",
                 contentType : "application/json",
-                data: '{"category": selectedCategory, "brand": selectedBrand, "productName": selectedName, "productVersion": selectedVersion, "size": "12", "color" : "yellow", "page": 0}',
+                data: JSON.stringify(postData),
                 type: "POST",
                 dataType : "json",
          })
