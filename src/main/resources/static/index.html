@@ -77,6 +77,7 @@
 
     function populateProductNames(){
         $("#name").find('option').remove().end().append('<option value="none">none</option>').val('none');
+        $("#version").find('option').remove().end().append('<option value="none">none</option>').val('none');
 
         const selectedCategory = $("#category").val();
         const selectedBrand = $("#brand").val();
@@ -106,6 +107,8 @@
 
     function populateBrands(){
         $("#brand").find('option').remove().end().append('<option value="none">none</option>').val('none');
+        $("#name").find('option').remove().end().append('<option value="none">none</option>').val('none');
+        $("#version").find('option').remove().end().append('<option value="none">none</option>').val('none');
 
         const selectedCategory = $("#category").val();
 
@@ -126,54 +129,41 @@
             console.log( "Status: " + status );
             console.dir( xhr );
         });
-
     }
-
 
     function addBrandToHtmlSelect(item, index, array){
         $("<option>").text(item).appendTo("#brand");
     }
 
     function find(){
+        const selectedCategory = $("#category").val();
+        const selectedBrand = $("#brand").val();
+        const selectedName = $("#name").val();
+        const selectedVersion = $("#version").val();
 
-
-    $.ajax({
-
-        // The URL for the request
-        url: "/search",
-
-        contentType : "application/json",
-
-        // The data to send (will be converted to a query string)
-        data: '{"category": "KITES", "brand": "Cabrinha", "productName": "Switchblade", "productVersion": "2020", "size": "12", "color" : "yellow", "page": 0}',
-
-         // Whether this is a POST or GET request
-        type: "POST",
-
-        // The type of data we expect back
-        dataType : "json",
-    })
-  // Code to run if the request succeeds (is done);
-  // The response is passed to the function
-  .done(function( searchResultArray ) {
-        console.log(searchResultArray);
-        searchResultArray.forEach(myFunction);
-  })
-  // Code to run if the request fails; the raw request and
-  // status codes are passed to the function
-  .fail(function( xhr, status, errorThrown ) {
-    alert( "Sorry, there was a problem!" );
-    console.log( "Error: " + errorThrown );
-    console.log( "Status: " + status );
-    console.dir( xhr );
-  })
-  // Code to run regardless of success or failure;
-  .always(function( xhr, status ) {
-    console.log( "The request is complete!" );
-  });
+        $.ajax({
+                url: "/search",
+                contentType : "application/json",
+                data: '{"category": selectedCategory, "brand": selectedBrand, "productName": selectedName, "productVersion": selectedVersion, "size": "12", "color" : "yellow", "page": 0}',
+                type: "POST",
+                dataType : "json",
+         })
+         .done(function( searchResultArray ) {
+                console.log(searchResultArray);
+                searchResultArray.forEach(addSearchResultItem);
+         })
+         .fail(function( xhr, status, errorThrown ) {
+            alert( "Sorry, there was a problem!" );
+            console.log( "Error: " + errorThrown );
+            console.log( "Status: " + status );
+            console.dir( xhr );
+         })
+         .always(function( xhr, status ) {
+            console.log( "The request is complete!" );
+         });
     }
 
-    function myFunction(item, index, arr) {
+    function addSearchResultItem(item, index, arr) {
          console.log(item);
          $("<div>").text(item.link).appendTo("#searchResults");
     }
