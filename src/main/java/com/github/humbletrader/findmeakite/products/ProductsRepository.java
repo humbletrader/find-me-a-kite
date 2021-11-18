@@ -55,7 +55,7 @@ public class ProductsRepository {
 
     public List<String> findProductSizesByVersionNameBrandAndCategory(String category, String brand, String name, String version) {
         List<String> sizes = jdbcTemplate.query(
-                "SELECT distinct version " +
+                "SELECT distinct size " +
                         "FROM PRODUCTS inner join product_attributes on products.id = product_attributes.product_id " +
                         "where category = ? and brand = ? and name = ? and version = ?",
                 (rs, rowCount) -> rs.getString(1),
