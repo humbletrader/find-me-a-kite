@@ -36,7 +36,11 @@
         <option value="NONE">none</option>
     </select>
 
-    <select id="version" name="version">
+    <select id="version" name="version" onchange="populateSize()">
+        <option value="NONE">none</option>
+    </select>
+
+    <select id="size" name="size">
         <option value="NONE">none</option>
     </select>
 
@@ -47,6 +51,35 @@
 
 
 <script>
+    function populateSize(){
+        const selectedCategory = $("#category").val();
+        const selectedBrand = $("#brand").val();
+        const selectedName = $("#name").val();
+        const selectedVersion = $("version").val();
+
+         $.ajax({
+            url: "/sizeForVersionNameBrandAndCategory",
+            contentType : "application/json",
+            data: {"category": selectedCategory, "brand": selectedBrand, "name" : selectedName, "version": selectedVersion},
+            type: "GET",
+            dataType : "json",
+        })
+        .done(function( sizes ) {
+            console.log(sizes);
+            sizes.forEach(addSizeToHtmlSelect);
+        })
+        .fail(function( xhr, status, errorThrown ) {
+            alert( "Sorry, there was a problem!" );
+            console.log( "Error: " + errorThrown );
+            console.log( "Status: " + status );
+            console.dir( xhr );
+        });
+    }
+
+    function addSizeToHtmlSelect(item, index, array){
+         $("<option>").text(item).appendTo("#size");
+    }
+
     function populateVersion(){
         $("#version").find('option').remove().end().append('<option value="none">none</option>').val('none');
 
@@ -80,6 +113,7 @@
     function populateProductNames(){
         $("#name").find('option').remove().end().append('<option value="none">none</option>').val('none');
         $("#version").find('option').remove().end().append('<option value="none">none</option>').val('none');
+        $("#size").find('option').remove().end().append('<option value="none">none</option>').val('none');
 
         const selectedCategory = $("#category").val();
         const selectedBrand = $("#brand").val();
@@ -111,6 +145,7 @@
         $("#brand").find('option').remove().end().append('<option value="none">none</option>').val('none');
         $("#name").find('option').remove().end().append('<option value="none">none</option>').val('none');
         $("#version").find('option').remove().end().append('<option value="none">none</option>').val('none');
+        $("#size").find('option').remove().end().append('<option value="none">none</option>').val('none');
 
         const selectedCategory = $("#category").val();
 

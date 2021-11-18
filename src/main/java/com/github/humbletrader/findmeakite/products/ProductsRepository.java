@@ -52,4 +52,17 @@ public class ProductsRepository {
         logger.info("products repository found {} versions", versions.size());
         return versions;
     }
+
+    public List<String> findProductSizesByVersionNameBrandAndCategory(String category, String brand, String name, String version) {
+        List<String> sizes = jdbcTemplate.query(
+                "SELECT distinct version " +
+                        "FROM PRODUCTS inner join product_attributes on products.id = product_attributes.product_id " +
+                        "where category = ? and brand = ? and name = ? and version = ?",
+                (rs, rowCount) -> rs.getString(1),
+                category, brand, name, version
+        );
+
+        logger.info("products repository found {} sizes ", sizes.size());
+        return sizes;
+    }
 }

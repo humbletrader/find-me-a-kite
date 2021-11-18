@@ -35,4 +35,13 @@ public class ProductsController {
         return new ResponseEntity<>(service.findProductVersionsForNameBrandAndCategory(category, brand, name), HttpStatus.OK);
     }
 
+    @GetMapping(path = "/sizeForVersionNameBrandAndCategory")
+    public ResponseEntity<Iterable<String>> retrieveProductSizesByVersionNameCategoryAndBrand(@RequestParam String category,
+                                                                                              @RequestParam String brand,
+                                                                                              @RequestParam String name,
+                                                                                              @RequestParam String version) {
+        logger.info("retrieving product sizes for category {} brand {} name {} and version {} ...", category, brand, name, version);
+        return new ResponseEntity<>(service.findProductVersionsForNameBrandAndCategory(category, brand, name, version), HttpStatus.OK);
+    }
+
 }
