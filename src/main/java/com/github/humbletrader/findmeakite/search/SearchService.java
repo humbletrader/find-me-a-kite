@@ -38,9 +38,12 @@ public class SearchService {
         StringBuilder selectString = new StringBuilder();
         selectString.append("select distinct p.").append(criteria.getTarget())
                 .append(" from products p")
-                .append(" where");
+                .append(" where ")
+                .append(" p.category = '").append(criteria.getCriteria().get("category")).append("'");
+
+        criteria.getCriteria().remove("category");
         for (Map.Entry<String, String> criteriaEntry : criteria.getCriteria().entrySet()) {
-            selectString.append("p.").append(criteriaEntry.getKey()).append("='").append(criteriaEntry.getValue()).append("'");
+            selectString.append(" and p.").append(criteriaEntry.getKey()).append("='").append(criteriaEntry.getValue()).append("'");
         }
 
         return searchRepository.searchDistinctValues(selectString.toString());
