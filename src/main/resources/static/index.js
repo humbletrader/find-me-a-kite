@@ -30,18 +30,21 @@ function displayNewCriteriaRow(){
     criteriaCount = criteriaCount + 1;
 }
 
-function populateValues(divCount){
-
-    var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
-    var result = { "target" : currentCriteria}
+function collectCriteriaValues(divCount){
     var criteria = { "category" : $("#category").val()}
-
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
         criteria[selectedCriteria] = selectedCriteriaValue;
     }
-    result["criteria"] = criteria
+    return criteria;
+}
+
+function populateValues(divCount){
+
+    var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
+    var result = { "target" : currentCriteria}
+    result["criteria"] = collectCriteriaValues(divCount);
 
     console.log("populate values for " + JSON.stringify(result));
 
@@ -193,25 +196,15 @@ function addBrandToHtmlSelect(item, index, array){
 function find(){
     $("#searchResults div").empty();
 
-    const selectedCategory = $("#category").val();
-    const selectedBrand = $("#brand").val();
-    const selectedName = $("#name").val();
-    const selectedVersion = $("#version").val();
+   var postData = {
+    "page" : 0,
+    "criteria" : collectCriteriaValues(currentCriteria)
+   }
+   console.log("sending to server..."+JSON.stringify(postData));
 
-    const postData = {
-        "category": selectedCategory,
-        "brand": selectedBrand,
-        "productName": selectedName,
-        "productVersion": selectedVersion,
-        "size": "12",
-        "color" : "yellow",
-        "page": 0
-    }
-    console.log("sending to server...");
-    console.log(postData);
 
     $.ajax({
-            url: "/search",
+            url: "/searchv2",
             contentType : "application/json",
             data: JSON.stringify(postData),
             type: "POST",
