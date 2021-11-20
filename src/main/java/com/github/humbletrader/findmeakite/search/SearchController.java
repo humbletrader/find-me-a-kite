@@ -36,6 +36,6 @@ public class SearchController {
     @PostMapping(path = "/searchDistinctValues")
     public ResponseEntity<Iterable<String>> retrieveDistinctValues(@RequestBody DistinctValuesSearchCriteria data){
         logger.info("searching distinct values for {}", data);
-        return new ResponseEntity<>(Arrays.asList("val1", "val2", "val3"), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.searchDistinctValuesByCriteria(data), HttpStatus.OK);
     }
 }
