@@ -65,7 +65,7 @@ public class SearchService {
         for (Map.Entry<String, String> criteriaEntry : criteria.entrySet()) {
             if(!criteriaEntry.getKey().equals("category")){
                 selectString.append(" and p.").append(criteriaEntry.getKey()).append("= ? ");
-                valuesForParameters.add(criteriaEntry.getValue());
+                valuesForParameters.add(criteriaEntry.getValue().toLowerCase());
             }
         }
 
