@@ -31,8 +31,7 @@ public class SearchRepository {
     }
 
     public List<String> searchDistinctValues(SearchStatement searchStatement){
-        logger.info("searching for distinct values with : {} ", searchStatement.getSqlWithoutParameters());
-        logger.info("searching distinct values with params {}", searchStatement.getParamValues());
+        logger.info("searching for distinct values with : {} ", searchStatement);
         return jdbcTemplate.query(searchStatement.getSqlWithoutParameters(),
                 (rs, rowCount) -> rs.getString(1),
                 searchStatement.getParamValues()
@@ -40,8 +39,7 @@ public class SearchRepository {
     }
 
     public List<SearchResult> pagedSearchByCriteriaV2(SearchStatement searchStatement){
-        logger.info("searching for distinct values with : {} ", searchStatement.getSqlWithoutParameters());
-        logger.info("searching distinct values with params {}", searchStatement.getParamValues());
+        logger.info("searching for products with : {} ", searchStatement);
         return jdbcTemplate.query(
                 searchStatement.getSqlWithoutParameters(),
                 (rs, rowCount) -> new SearchResult(rs.getString(1), rs.getString(2), rs.getString(3)),

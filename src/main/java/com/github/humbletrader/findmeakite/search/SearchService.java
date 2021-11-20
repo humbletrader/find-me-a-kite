@@ -45,7 +45,10 @@ public class SearchService {
         return searchRepository.pagedSearchByCriteriaV2(sql);
     }
 
-    private SearchStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, String... columns){
+    SearchStatement buildSqlWithFilters(Map<String, String> criteria,
+                                        OptionalInt page,
+                                        String... columns){
+
         StringBuilder selectString = new StringBuilder("select ");
         List<Object> valuesForParameters = new ArrayList<>();
 
@@ -68,10 +71,8 @@ public class SearchService {
 
         if(page.isPresent()){
             int startOfPage = page.getAsInt() * ROWS_PER_PAGE;
-            int rowsPerPage = ROWS_PER_PAGE;
-
             selectString.append("order by id LIMIT ? OFFSET ?");
-            valuesForParameters.add(rowsPerPage);
+            valuesForParameters.add(ROWS_PER_PAGE);
             valuesForParameters.add(startOfPage);
 
         }
