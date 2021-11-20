@@ -1,11 +1,12 @@
 package com.github.humbletrader.findmeakite.search;
 
-import com.github.humbletrader.findmeakite.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 
 @RestController
@@ -30,5 +31,11 @@ public class SearchController {
     public ResponseEntity<Iterable<SearchResult>> retrieveProduct(@RequestBody SearchCriteria criteria) {
         logger.info("searching products by {} ", criteria);
         return new ResponseEntity<>(findService.searchByCriteria(criteria), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/searchDistinctValues")
+    public ResponseEntity<Iterable<String>> retrieveDistinctValues(@RequestBody DistinctValuesSearchCriteria data){
+        logger.info("searching distinct values for {}", data);
+        return new ResponseEntity<>(Arrays.asList("val1", "val2", "val3"), HttpStatus.OK);
     }
 }

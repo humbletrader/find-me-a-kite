@@ -5,7 +5,66 @@ $(document).ready(function() {
 
 $(window).on( "load", function() {
     console.log( "window loaded" );
+
+
 });
+
+const criteria = ["none", "brand", "name", "version", "year", "size"]
+var criteriaCount = 0;
+var criteriaValueIdPrefix = "criteria"
+var criteriaNameIdPrefix = "criteriaValue"
+
+function displayNewCriteriaRow(){
+
+    var newSearchCriteriaRow = $("<div>").appendTo("#searchCriteria");
+    var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
+        .attr("id",  criteriaNameIdPrefix+criteriaCount)
+        .appendTo(newSearchCriteriaRow);
+
+    criteria.forEach(item => {
+            $("<option>").text(item).appendTo(selectHtmlForCriteria);
+    });
+
+    var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">").appendTo(newSearchCriteriaRow);
+    $("<option>").val("none").text("none").appendTo(selectHtmlForValues);
+    criteriaCount = criteriaCount + 1;
+}
+
+function populateValues(divCount){
+
+    var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
+    var result = { "target" : currentCriteria}
+    var criteria = { "category" : $("#category").val()}
+
+    for(i=0; i < divCount; i++){
+        var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
+        var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
+        criteria[selectedCriteria] = selectedCriteriaValue;
+    }
+    result["criteria"] = criteria
+
+    alert("populate values for " + JSON.stringify(result));
+
+     $.ajax({
+            url: "/searchDistinctValues",
+            contentType : "application/json",
+            data: JSON.stringify(result),
+            type: "POST",
+            dataType : "json",
+         })
+         .done(function( distinctValues ) {
+                console.log(distinctValues);
+         })
+         .fail(function( xhr, status, errorThrown ) {
+            alert( "Sorry, there was a problem!" );
+            console.log( "Error: " + errorThrown );
+            console.log( "Status: " + status );
+            console.dir( xhr );
+         })
+         .always(function( xhr, status ) {
+            console.log( "The request is complete!" );
+         });
+}
 
 function populateSize(){
     const selectedCategory = $("#category").val();
