@@ -198,7 +198,7 @@ function find(){
 
    var postData = {
     "page" : 0,
-    "criteria" : collectCriteriaValues(currentCriteria)
+    "criteria" : collectCriteriaValues(criteriaCount)
    }
    console.log("sending to server..."+JSON.stringify(postData));
 
