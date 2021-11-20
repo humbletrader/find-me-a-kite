@@ -15,22 +15,22 @@ public class SearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
-    private SearchService findService;
+    private SearchService searchService;
 
     public SearchController(SearchService findService) {
-        this.findService = findService;
+        this.searchService = findService;
     }
 
     @GetMapping(path = "/categories")
     public ResponseEntity<Iterable<String>> retrieveCategories() {
         logger.info("retrieving supported categories ...");
-        return new ResponseEntity<>(findService.findCategories(), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.findCategories(), HttpStatus.OK);
     }
 
     @PostMapping(path = "/search")
     public ResponseEntity<Iterable<SearchResult>> retrieveProduct(@RequestBody SearchCriteria criteria) {
         logger.info("searching products by {} ", criteria);
-        return new ResponseEntity<>(findService.searchByCriteria(criteria), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.searchByCriteria(criteria), HttpStatus.OK);
     }
 
     @PostMapping(path = "/searchDistinctValues")

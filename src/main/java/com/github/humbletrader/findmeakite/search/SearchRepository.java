@@ -1,5 +1,7 @@
 package com.github.humbletrader.findmeakite.search;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -7,6 +9,8 @@ import java.util.List;
 
 @Repository
 public class SearchRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(SearchRepository.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -24,6 +28,11 @@ public class SearchRepository {
                 resultsPerPage,
                 startOfPage
         );
+    }
+
+    public List<String> searchDistinctValues(String selectString){
+        logger.info("searching for distinct values with :  {}", selectString);
+        return jdbcTemplate.query(selectString, (rs, rowCount) -> rs.getString(1));
     }
 
 }
