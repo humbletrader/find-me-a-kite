@@ -1,5 +1,6 @@
 package com.github.humbletrader.findmeakite.search;
 
+@Deprecated
 public class SearchCriteria {
 
     private String category;

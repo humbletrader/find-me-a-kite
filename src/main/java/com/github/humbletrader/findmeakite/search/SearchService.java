@@ -5,9 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SearchService {
@@ -35,18 +33,49 @@ public class SearchService {
     }
 
     public List<String> searchDistinctValuesByCriteria(DistinctValuesSearchCriteria criteria){
-        StringBuilder selectString = new StringBuilder();
-        selectString.append("select distinct p.").append(criteria.getTarget())
-                .append(" from products p")
-                .append(" where ")
-                .append(" p.category = '").append(criteria.getCriteria().get("category")).append("'");
+        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), "distinct p." + criteria.getTarget());
+        return searchRepository.searchDistinctValues(searchStatement);
+    }
 
-        criteria.getCriteria().remove("category");
-        for (Map.Entry<String, String> criteriaEntry : criteria.getCriteria().entrySet()) {
-            selectString.append(" and p.").append(criteriaEntry.getKey()).append("='").append(criteriaEntry.getValue().toLowerCase()).append("'");
+    public List<SearchResult> searchByCriteriaV2(SearchCriteriaV2 criteria){
+        logger.info("searching products by criteria {} ", criteria);
+
+        SearchStatement sql = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.of(criteria.getPage()), "name", "link", "brand_name_version");
+
+        return searchRepository.pagedSearchByCriteriaV2(sql);
+    }
+
+    private SearchStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, String... columns){
+        StringBuilder selectString = new StringBuilder("select ");
+        List<Object> valuesForParameters = new ArrayList<>();
+
+        for (int i = 0; i < columns.length - 1; i++) {
+            selectString.append(columns[i]).append(",");
+        }
+        //we write the last one without comma at the end
+        selectString.append(columns[columns.length - 1]);
+        selectString.append(" from products p")
+                .append(" where ")
+                .append(" p.category = ?");
+        valuesForParameters.add(criteria.get("category"));
+
+        for (Map.Entry<String, String> criteriaEntry : criteria.entrySet()) {
+            if(!criteriaEntry.getKey().equals("category")){
+                selectString.append(" and p.").append(criteriaEntry.getKey()).append("= ? ");
+                valuesForParameters.add(criteriaEntry.getValue());
+            }
         }
 
-        return searchRepository.searchDistinctValues(selectString.toString());
+        if(page.isPresent()){
+            int startOfPage = page.getAsInt() * ROWS_PER_PAGE;
+            int rowsPerPage = ROWS_PER_PAGE;
+
+            selectString.append("order by id LIMIT ? OFFSET ?");
+            valuesForParameters.add(rowsPerPage);
+            valuesForParameters.add(startOfPage);
+
+        }
+        return new SearchStatement(selectString.toString(), valuesForParameters.toArray());
     }
 
 }

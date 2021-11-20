@@ -38,4 +38,10 @@ public class SearchController {
         logger.info("searching distinct values for {}", data);
         return new ResponseEntity<>(searchService.searchDistinctValuesByCriteria(data), HttpStatus.OK);
     }
+
+    @PostMapping(path = "/searchv2")
+    public ResponseEntity<Iterable<SearchResult>> retrieveProductV2(@RequestBody SearchCriteriaV2 criteria) {
+        logger.info("searching products by {} ", criteria);
+        return new ResponseEntity<>(searchService.searchByCriteriaV2(criteria), HttpStatus.OK);
+    }
 }

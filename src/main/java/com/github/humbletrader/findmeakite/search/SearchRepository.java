@@ -30,9 +30,23 @@ public class SearchRepository {
         );
     }
 
-    public List<String> searchDistinctValues(String selectString){
-        logger.info("searching for distinct values with :  {}", selectString);
-        return jdbcTemplate.query(selectString, (rs, rowCount) -> rs.getString(1));
+    public List<String> searchDistinctValues(SearchStatement searchStatement){
+        logger.info("searching for distinct values with : {} ", searchStatement.getSqlWithoutParameters());
+        logger.info("searching distinct values with params {}", searchStatement.getParamValues());
+        return jdbcTemplate.query(searchStatement.getSqlWithoutParameters(),
+                (rs, rowCount) -> rs.getString(1),
+                searchStatement.getParamValues()
+        );
+    }
+
+    public List<SearchResult> pagedSearchByCriteriaV2(SearchStatement searchStatement){
+        logger.info("searching for distinct values with : {} ", searchStatement.getSqlWithoutParameters());
+        logger.info("searching distinct values with params {}", searchStatement.getParamValues());
+        return jdbcTemplate.query(
+                searchStatement.getSqlWithoutParameters(),
+                (rs, rowCount) -> new SearchResult(rs.getString(1), rs.getString(2), rs.getString(3)),
+                searchStatement.getParamValues()
+        );
     }
 
 }
