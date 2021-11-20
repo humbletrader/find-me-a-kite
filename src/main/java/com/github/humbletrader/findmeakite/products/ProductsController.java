@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Deprecated
 public class ProductsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ProductsController.class);
