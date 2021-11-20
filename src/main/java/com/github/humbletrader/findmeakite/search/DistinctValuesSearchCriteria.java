@@ -20,4 +20,11 @@ public class DistinctValuesSearchCriteria {
         return criteriaNamesAndValues;
     }
 
+    @Override
+    public String toString() {
+        return "DistinctValuesSearchCriteria{" +
+                "target='" + target + '\'' +
+                ", criteriaNamesAndValues=" + criteriaNamesAndValues +
+                '}';
+    }
 }
