@@ -22,16 +22,6 @@ public class SearchService {
         return Arrays.asList("KITE", "TWINTIPS", "BARS", "WETSUITS");
     }
 
-    public List<SearchResult> searchByCriteria(SearchCriteria criteria){
-        logger.info("searching products by criteria {} ", criteria);
-        int startOfPage = criteria.getPage() * ROWS_PER_PAGE;
-        int rowsPerPage = ROWS_PER_PAGE;
-
-        logger.info("asking database for page {} from start {} a number of {}", criteria.getPage(), startOfPage, rowsPerPage);
-
-        return searchRepository.pagedSearchByCriteria(criteria, startOfPage, rowsPerPage);
-    }
-
     public List<String> searchDistinctValuesByCriteria(DistinctValuesSearchCriteria criteria){
         SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), "distinct p." + criteria.getTarget());
         return searchRepository.searchDistinctValues(searchStatement);

@@ -27,12 +27,6 @@ public class SearchController {
         return new ResponseEntity<>(searchService.findCategories(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/search")
-    public ResponseEntity<Iterable<SearchResult>> retrieveProduct(@RequestBody SearchCriteria criteria) {
-        logger.info("searching products by {} ", criteria);
-        return new ResponseEntity<>(searchService.searchByCriteria(criteria), HttpStatus.OK);
-    }
-
     @PostMapping(path = "/searchDistinctValues")
     public ResponseEntity<Iterable<String>> retrieveDistinctValues(@RequestBody DistinctValuesSearchCriteria data){
         logger.info("searching distinct values for {}", data);

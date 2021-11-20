@@ -29,29 +29,14 @@
         <option value="BARS">bar</option>
     </select>
 
-    <select id="brand" name="brand" onchange="populateProductNames()">
-        <option value="NONE">none</option>
-    </select>
-
-    <select id="name" name="name" onchange="populateVersion()">
-        <option value="NONE">none</option>
-    </select>
-
-    <select id="version" name="version" onchange="populateSize()">
-        <option value="NONE">none</option>
-    </select>
-
-    <select id="size" name="size">
-        <option value="NONE">none</option>
-    </select>
+    <div id="searchCriteria">
+            <input type="button" onclick="displayNewCriteriaRow()" value="New Criteria"/>
+    </div>
 
     <div id="searchResults">
 
     </div>
 
-    <div id="searchCriteria">
-            <input type="button" onclick="displayNewCriteriaRow()" value="New Criteria"/>
-    </div>
 </div>
 </body>
 </html>
