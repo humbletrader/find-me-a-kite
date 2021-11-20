@@ -43,7 +43,7 @@ public class SearchService {
 
         criteria.getCriteria().remove("category");
         for (Map.Entry<String, String> criteriaEntry : criteria.getCriteria().entrySet()) {
-            selectString.append(" and p.").append(criteriaEntry.getKey()).append("='").append(criteriaEntry.getValue()).append("'");
+            selectString.append(" and p.").append(criteriaEntry.getKey()).append("='").append(criteriaEntry.getValue().toLowerCase()).append("'");
         }
 
         return searchRepository.searchDistinctValues(selectString.toString());

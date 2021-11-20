@@ -43,7 +43,7 @@ function populateValues(divCount){
     }
     result["criteria"] = criteria
 
-    alert("populate values for " + JSON.stringify(result));
+    console.log("populate values for " + JSON.stringify(result));
 
      $.ajax({
             url: "/searchDistinctValues",
@@ -53,7 +53,10 @@ function populateValues(divCount){
             dataType : "json",
          })
          .done(function( distinctValues ) {
-                console.log(distinctValues);
+             console.log(distinctValues);
+             distinctValues.forEach(item => {
+                $("<option>").text(item).appendTo("#"+criteriaValueIdPrefix+divCount);
+             });
          })
          .fail(function( xhr, status, errorThrown ) {
             alert( "Sorry, there was a problem!" );
