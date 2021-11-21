@@ -18,15 +18,19 @@ function displayNewCriteriaRow(){
     var newSearchCriteriaRow = $("<div>")
         .attr({
             id : criteriaDivIdPrefix + criteriaCount,
-            class : form-row
+            class : "form-row"
          })
         .appendTo("#searchCriteria");
+
+    var firstColumn = $("<div class='col'>").appendTo(newSearchCriteriaRow)
+    var secondColumn = $("<div class='col'>").appendTo(newSearchCriteriaRow)
+    var thirdColumn = $("<div class='col'>").appendTo(newSearchCriteriaRow)
 
     //select
     var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .attr("class", "form-control")
-        .appendTo(newSearchCriteriaRow);
+        .appendTo(firstColumn);
     criteria.forEach(item => {
             $("<option>").text(item).appendTo(selectHtmlForCriteria);
     });
@@ -34,7 +38,7 @@ function displayNewCriteriaRow(){
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
             .attr("class", "form-control")
-            .appendTo(newSearchCriteriaRow);
+            .appendTo(secondColumn);
     $("<option>").val("none").text("none").appendTo(selectHtmlForValues);
 
 
@@ -44,7 +48,7 @@ function displayNewCriteriaRow(){
         id : 'delete'+criteriaCount,
         value : 'Del',
         class: "form-control"
-     }).appendTo(newSearchCriteriaRow)
+     }).appendTo(thirdColumn)
 
     criteriaCount = criteriaCount + 1;
 }

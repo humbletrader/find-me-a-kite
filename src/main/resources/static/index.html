@@ -46,20 +46,21 @@
     <div class="container">
 
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-5">
                 <select id="category" name="category" class="form-control">
                     <option value="KITES" >kite</option>
                     <option value="TWINTIPS">twintip</option>
                     <option value="BARS">bar</option>
                 </select>
 
+                <input type="button" onclick="displayNewCriteriaRow()" value="Add Filters" class="btn btn-block btn-outline-dark"/>
                 <div id="searchCriteria">
-                    <input type="button" onclick="displayNewCriteriaRow()" value="Add Filters" class="btn btn-block btn-outline-dark"/>
+
                 </div>
 
                 <input type="button" onclick="find()" name="find" value="Find" class="btn btn-block btn-outline-dark"/>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-7">
 
                     <table class="table table-striped">
                         <thead>
