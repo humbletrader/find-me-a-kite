@@ -55,7 +55,12 @@ public class SearchService {
         for (Map.Entry<String, String> criteriaEntry : criteria.entrySet()) {
             if(!criteriaEntry.getKey().equals("category")){
                 selectString.append(" and p.").append(criteriaEntry.getKey()).append("= ? ");
-                valuesForParameters.add(criteriaEntry.getValue().toLowerCase());
+                if(criteriaEntry.getKey().equals("year")){
+                    //year is an integer in DB
+                    valuesForParameters.add(Integer.valueOf(criteriaEntry.getValue()));
+                }else{
+                    valuesForParameters.add(criteriaEntry.getValue().toLowerCase());
+                }
             }
         }
 
