@@ -107,7 +107,18 @@ function find(){
      })
      .done(function( searchResultArray ) {
             console.log(searchResultArray);
-            searchResultArray.forEach(addSearchResultItem);
+            searchResultArray.forEach(item => {
+                const resultLineTr = $("<tr>");
+
+                const linkTd = $("<td>")
+                linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link));
+                resultLineTr.append(linkTd)
+
+                $("<td>").appendTo(resultLineTr)
+                $("<td>").appendTo(resultLineTr)
+
+                $("#searchResults").append(resultLineTr);
+            });
      })
      .fail(function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
@@ -118,12 +129,5 @@ function find(){
      .always(function( xhr, status ) {
         console.log( "The request is complete!" );
      });
-}
-
-function addSearchResultItem(item, index, arr) {
-     console.log(item);
-     const resultLineDiv = $("<div>");
-     $("#searchResults").append(resultLineDiv);
-     resultLineDiv.append($("<a>").text(item.brandNameVersion).attr("href", item.link));
 }
 
