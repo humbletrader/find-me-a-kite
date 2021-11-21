@@ -7,25 +7,43 @@ $(window).on( "load", function() {
     console.log( "window loaded" );
 });
 
-const criteria = ["none", "brand", "name", "version", "year", "size"]
+const criteria = ["none", "brand", "name", "version", "year", "size"];
 var criteriaCount = 0;
-var criteriaValueIdPrefix = "criteria"
-var criteriaNameIdPrefix = "criteriaValue"
+var criteriaDivIdPrefix = "criteriaRow";
+var criteriaValueIdPrefix = "criteria";
+var criteriaNameIdPrefix = "criteriaValue";
 
 function displayNewCriteriaRow(){
+    //div
+    var newSearchCriteriaRow = $("<div>").attr({id : criteriaDivIdPrefix + criteriaCount}).appendTo("#searchCriteria");
 
-    var newSearchCriteriaRow = $("<div>").appendTo("#searchCriteria");
+    //select
     var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .appendTo(newSearchCriteriaRow);
-
     criteria.forEach(item => {
             $("<option>").text(item).appendTo(selectHtmlForCriteria);
     });
 
+    //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">").appendTo(newSearchCriteriaRow);
     $("<option>").val("none").text("none").appendTo(selectHtmlForValues);
+
+
+    //delete button
+    $("<input onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
+        type : 'button',
+        id : 'delete'+criteriaCount,
+        value : 'Del'
+     }).appendTo(newSearchCriteriaRow)
+
     criteriaCount = criteriaCount + 1;
+}
+
+function deleteCriteriaBelow(divCount){
+    for(i=divCount; i < criteriaCount; i++){
+        $("#"+criteriaDivIdPrefix+i).remove();
+    }
 }
 
 function collectCriteriaValues(divCount){
