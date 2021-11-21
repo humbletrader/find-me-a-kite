@@ -15,18 +15,26 @@ var criteriaNameIdPrefix = "criteriaValue";
 
 function displayNewCriteriaRow(){
     //div
-    var newSearchCriteriaRow = $("<div>").attr({id : criteriaDivIdPrefix + criteriaCount}).appendTo("#searchCriteria");
+    var newSearchCriteriaRow = $("<div>")
+        .attr({
+            id : criteriaDivIdPrefix + criteriaCount,
+            class : form-row
+         })
+        .appendTo("#searchCriteria");
 
     //select
     var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
+        .attr("class", "form-control")
         .appendTo(newSearchCriteriaRow);
     criteria.forEach(item => {
             $("<option>").text(item).appendTo(selectHtmlForCriteria);
     });
 
     //select with values
-    var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">").appendTo(newSearchCriteriaRow);
+    var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
+            .attr("class", "form-control")
+            .appendTo(newSearchCriteriaRow);
     $("<option>").val("none").text("none").appendTo(selectHtmlForValues);
 
 
@@ -34,7 +42,8 @@ function displayNewCriteriaRow(){
     $("<input onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
         type : 'button',
         id : 'delete'+criteriaCount,
-        value : 'Del'
+        value : 'Del',
+        class: "form-control"
      }).appendTo(newSearchCriteriaRow)
 
     criteriaCount = criteriaCount + 1;
@@ -89,7 +98,7 @@ function populateValues(divCount){
 }
 
 function find(){
-    $("#searchResults div").empty();
+    $("#searchResults").empty();
 
    var postData = {
     "page" : 0,

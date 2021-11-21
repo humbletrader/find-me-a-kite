@@ -47,20 +47,17 @@
 
         <div class="row">
             <div class="col-sm-4">
-
-
-                <input type="button" onclick="find()" name="find" value="Find" />
-
-                <select id="category" name="category">
+                <select id="category" name="category" class="form-control">
                     <option value="KITES" >kite</option>
                     <option value="TWINTIPS">twintip</option>
                     <option value="BARS">bar</option>
                 </select>
 
                 <div id="searchCriteria">
-                    <input type="button" onclick="displayNewCriteriaRow()" value="New Criteria"/>
+                    <input type="button" onclick="displayNewCriteriaRow()" value="Add Filters" class="btn btn-block btn-outline-dark"/>
                 </div>
 
+                <input type="button" onclick="find()" name="find" value="Find" class="btn btn-block btn-outline-dark"/>
             </div>
             <div class="col-sm-8">
 
@@ -78,16 +75,7 @@
                                 <td>Doe</td>
                                 <td>john@example.com</td>
                             </tr>
-                            <tr>
-                                <td>Mary</td>
-                                <td>Moe</td>
-                                <td>mary@example.com</td>
-                            </tr>
-                            <tr>
-                                <td>July</td>
-                                <td>Dooley</td>
-                                <td>july@example.com</td>
-                            </tr>
+
                         </tbody>
                     </table>
             </div>
