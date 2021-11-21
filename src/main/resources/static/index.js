@@ -18,13 +18,11 @@ function displayNewCriteriaRow(){
     var newSearchCriteriaRow = $("<div>")
         .attr({
             id : criteriaDivIdPrefix + criteriaCount,
-            class : "input-group"
+            class : "input-group mb-3"
          })
         .appendTo("#searchCriteria");
 
     var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
-
-
 
     //select
     var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
@@ -127,8 +125,8 @@ function find(){
                 linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link));
                 resultLineTr.append(linkTd)
 
-                $("<td>").appendTo(resultLineTr)
-                $("<td>").appendTo(resultLineTr)
+                $("<td>").text("size").appendTo(resultLineTr)
+                $("<td>").text("price").appendTo(resultLineTr)
 
                 $("#searchResults").append(resultLineTr);
             });
