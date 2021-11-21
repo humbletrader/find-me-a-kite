@@ -18,13 +18,13 @@ function displayNewCriteriaRow(){
     var newSearchCriteriaRow = $("<div>")
         .attr({
             id : criteriaDivIdPrefix + criteriaCount,
-            class : "form-row"
+            class : "input-group"
          })
         .appendTo("#searchCriteria");
 
-    var firstColumn = $("<div class='col'>").appendTo(newSearchCriteriaRow)
-    var secondColumn = $("<div class='col'>").appendTo(newSearchCriteriaRow)
-    var thirdColumn = $("<div class='col'>").appendTo(newSearchCriteriaRow)
+    var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
+
+
 
     //select
     var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
@@ -38,10 +38,10 @@ function displayNewCriteriaRow(){
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
             .attr("class", "form-control")
-            .appendTo(secondColumn);
+            .appendTo(newSearchCriteriaRow);
     $("<option>").val("none").text("none").appendTo(selectHtmlForValues);
 
-
+    var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
     //delete button
     $("<input onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
         type : 'button',
