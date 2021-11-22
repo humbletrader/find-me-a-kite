@@ -25,9 +25,7 @@ public class SearchService {
     }
 
     public List<String> searchDistinctValuesByCriteria(DistinctValuesSearchCriteria criteria){
-        String selectColumnPrefix = isProductAttributeTableColumn(criteria.getTarget()) ? "a." : "p.";
-        String fullNameColumn = "distinct " + selectColumnPrefix + criteria.getTarget();
-        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), true, fullNameColumn);
+        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), true, criteria.getTarget());
         return searchRepository.searchDistinctValues(searchStatement);
     }
 
