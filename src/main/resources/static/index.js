@@ -69,6 +69,10 @@ function collectCriteriaValues(divCount){
 
 function populateValues(divCount){
 
+    //delete previous options in select
+    $("#"+criteriaValueIdPrefix+divCount).empty();
+     $("<option>").text("none").appendTo("#"+criteriaValueIdPrefix+divCount);
+
     var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
     var result = { "target" : currentCriteria}
     result["criteria"] = collectCriteriaValues(divCount);
