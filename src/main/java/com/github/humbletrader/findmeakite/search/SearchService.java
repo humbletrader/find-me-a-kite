@@ -1,5 +1,6 @@
 package com.github.humbletrader.findmeakite.search;
 
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ public class SearchService {
 
     public final static int ROWS_PER_PAGE = 20;
 
+    private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = new HashSet<>(Arrays.asList("price", "size", "color"));
     @Autowired
     private SearchRepository searchRepository;
 
@@ -23,7 +25,9 @@ public class SearchService {
     }
 
     public List<String> searchDistinctValuesByCriteria(DistinctValuesSearchCriteria criteria){
-        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), "distinct p." + criteria.getTarget());
+        String selectColumnPrefix = isProductAttributeTableColumn(criteria.getTarget()) ? "a." : "p.";
+        String fullNameColumn = "distinct " + selectColumnPrefix + criteria.getTarget();
+        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), fullNameColumn);
         return searchRepository.searchDistinctValues(searchStatement);
     }
 
@@ -35,43 +39,58 @@ public class SearchService {
         return searchRepository.pagedSearchByCriteriaV2(sql);
     }
 
-    SearchStatement buildSqlWithFilters(Map<String, String> criteria,
-                                        OptionalInt page,
-                                        String... columns){
+    SearchStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, String... columns){
 
         StringBuilder selectString = new StringBuilder("select ");
-        List<Object> valuesForParameters = new ArrayList<>();
-
         for (int i = 0; i < columns.length - 1; i++) {
             selectString.append(columns[i]).append(",");
         }
         //we write the last one without comma at the end
         selectString.append(columns[columns.length - 1]);
-        selectString.append(" from products p")
-                .append(" where ")
-                .append(" p.category = ?");
+
+        StringBuilder fromString = new StringBuilder(" from");
+        StringBuilder whereString = new StringBuilder(" where");
+        List<Object> valuesForParameters = new ArrayList<>();
+
+        fromString.append(" products p");
+        if(!Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
+            fromString.append(" inner join product_attributes a on p.id = a.product_id");
+        }
+        selectString.append(fromString);
+
+        whereString.append(" p.category = ?");
         valuesForParameters.add(criteria.get("category"));
 
-        for (Map.Entry<String, String> criteriaEntry : criteria.entrySet()) {
-            if(!criteriaEntry.getKey().equals("category")){
-                selectString.append(" and p.").append(criteriaEntry.getKey()).append("= ? ");
-                if(criteriaEntry.getKey().equals("year")){
-                    //year is an integer in DB
-                    valuesForParameters.add(Integer.valueOf(criteriaEntry.getValue()));
+        for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
+            if(!currentCriteria.getKey().equals("category")){
+                if(isProductAttributeTableColumn(currentCriteria.getKey())){
+                    whereString.append(" and a.");
                 }else{
-                    valuesForParameters.add(criteriaEntry.getValue().toLowerCase());
+                    whereString.append(" and p.");
+                }
+                whereString.append(currentCriteria.getKey()).append(" = ?");
+                if(currentCriteria.getKey().equals("year")){
+                    //year is an integer in DB (temporary)
+                    valuesForParameters.add(Integer.valueOf(currentCriteria.getValue()));
+                }else{
+                    valuesForParameters.add(currentCriteria.getValue().toLowerCase());
                 }
             }
         }
+        selectString.append(whereString);
 
         if(page.isPresent()){
             int startOfPage = page.getAsInt() * ROWS_PER_PAGE;
-            selectString.append("order by id LIMIT ? OFFSET ?");
+            selectString.append(" order by id limit ? offset ?");
             valuesForParameters.add(ROWS_PER_PAGE);
             valuesForParameters.add(startOfPage);
-
         }
+
         return new SearchStatement(selectString.toString(), valuesForParameters.toArray());
+    }
+
+    private boolean isProductAttributeTableColumn(String colName){
+        return PRODUCT_ATTRIBUTES_COLUMNS.contains(colName);
     }
 
 }

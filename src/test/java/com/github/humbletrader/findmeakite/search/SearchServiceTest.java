@@ -2,24 +2,44 @@ package com.github.humbletrader.findmeakite.search;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.OptionalInt;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class SearchServiceTest {
 
     private SearchService underTest = new SearchService();
 
-
     @Test
-    public void sqlBuild(){
+    public void sqlBuildForTwoParametersNon(){
         Map<String, String> filters = new HashMap<>();
         filters.put("category", "KITES");
         filters.put("name", "cabrinha");
 
-        SearchStatement result = underTest.buildSqlWithFilters(filters, OptionalInt.of(1), "p.name");
-        System.out.println(result);
+        SearchStatement result = underTest.buildSqlWithFilters(filters, OptionalInt.of(0), "p.name");
+        assertEquals("select p.name from products p where p.category = ? and p.name = ? order by id limit ? offset ?", result.getSqlWithoutParameters());
+        assertTrue(Arrays.equals(new Object[]{"KITES", "cabrinha", 20, 0}, result.getParamValues()));
+    }
 
+    @Test
+    public void sqlBuildForTwoParametersWithSize(){
+        Map<String, String> filters = new HashMap<>();
+        filters.put("category", "KITES");
+        filters.put("name", "cabrinha");
+        filters.put("size", "10");
+
+        SearchStatement result = underTest.buildSqlWithFilters(filters, OptionalInt.of(0), "p.name");
+        assertEquals("select p.name " +
+                "from products p inner join product_attributes a on p.id = a.product_id " +
+                "where p.category = ? and a.size = ? and p.name = ? " +
+                "order by id limit ? offset ?",
+                result.getSqlWithoutParameters()
+        );
+        assertTrue(Arrays.equals(new Object[]{"KITES", "10", "cabrinha", 20, 0}, result.getParamValues()));
     }
 
 }
