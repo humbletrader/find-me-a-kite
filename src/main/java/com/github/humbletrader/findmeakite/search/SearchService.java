@@ -27,33 +27,39 @@ public class SearchService {
     public List<String> searchDistinctValuesByCriteria(DistinctValuesSearchCriteria criteria){
         String selectColumnPrefix = isProductAttributeTableColumn(criteria.getTarget()) ? "a." : "p.";
         String fullNameColumn = "distinct " + selectColumnPrefix + criteria.getTarget();
-        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), fullNameColumn);
+        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), true, fullNameColumn);
         return searchRepository.searchDistinctValues(searchStatement);
     }
 
     public List<SearchResult> searchByCriteriaV2(SearchCriteriaV2 criteria){
         logger.info("searching products by criteria {} ", criteria);
 
-        SearchStatement sql = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.of(criteria.getPage()), "name", "link", "brand_name_version");
+        SearchStatement sql = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.of(criteria.getPage()), false, "name", "link", "brand_name_version");
 
         return searchRepository.pagedSearchByCriteriaV2(sql);
     }
 
-    SearchStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, String... columns){
+    SearchStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, boolean distinct, String... columns){
 
-        StringBuilder selectString = new StringBuilder("select ");
-        for (int i = 0; i < columns.length - 1; i++) {
-            selectString.append(columns[i]).append(",");
+        StringBuilder selectString = new StringBuilder("select");
+        if(distinct) selectString.append(" distinct");
+        boolean hasColumnsFromProductAttributesInSelect = false;
+        for (int i = 0; i < columns.length; i++) {
+            if(isProductAttributeTableColumn(columns[i])){
+               hasColumnsFromProductAttributesInSelect = true;
+            }
+            selectString.append(prefixedColumn(columns[i]));
+            if (i < columns.length - 1) {
+                selectString.append(",");
+            }
         }
-        //we write the last one without comma at the end
-        selectString.append(columns[columns.length - 1]);
 
         StringBuilder fromString = new StringBuilder(" from");
         StringBuilder whereString = new StringBuilder(" where");
         List<Object> valuesForParameters = new ArrayList<>();
 
         fromString.append(" products p");
-        if(!Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
+        if(hasColumnsFromProductAttributesInSelect || !Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
             fromString.append(" inner join product_attributes a on p.id = a.product_id");
         }
         selectString.append(fromString);
@@ -63,12 +69,7 @@ public class SearchService {
 
         for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
             if(!currentCriteria.getKey().equals("category")){
-                if(isProductAttributeTableColumn(currentCriteria.getKey())){
-                    whereString.append(" and a.");
-                }else{
-                    whereString.append(" and p.");
-                }
-                whereString.append(currentCriteria.getKey()).append(" = ?");
+                whereString.append(" and").append(prefixedColumn(currentCriteria.getKey())).append(" = ?");
                 if(currentCriteria.getKey().equals("year")){
                     //year is an integer in DB (temporary)
                     valuesForParameters.add(Integer.valueOf(currentCriteria.getValue()));
@@ -91,6 +92,14 @@ public class SearchService {
 
     private boolean isProductAttributeTableColumn(String colName){
         return PRODUCT_ATTRIBUTES_COLUMNS.contains(colName);
+    }
+
+    private String prefixedColumn(String column){
+        if (isProductAttributeTableColumn(column)) {
+            return " a."+column;
+        }else{
+            return " p."+column;
+        }
     }
 
 }
