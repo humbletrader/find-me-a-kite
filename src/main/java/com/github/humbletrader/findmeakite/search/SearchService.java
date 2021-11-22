@@ -80,7 +80,7 @@ public class SearchService {
 
         if(page.isPresent()){
             int startOfPage = page.getAsInt() * ROWS_PER_PAGE;
-            selectString.append(" order by id limit ? offset ?");
+            selectString.append(" order by p.id limit ? offset ?");
             valuesForParameters.add(ROWS_PER_PAGE);
             valuesForParameters.add(startOfPage);
         }
