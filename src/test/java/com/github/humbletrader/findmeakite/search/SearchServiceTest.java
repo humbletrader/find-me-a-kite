@@ -21,7 +21,7 @@ public class SearchServiceTest {
         filters.put("name", "cabrinha");
 
         SearchStatement result = underTest.buildSqlWithFilters(filters, OptionalInt.of(0), false, "name");
-        assertEquals("select p.name from products p where p.category = ? and p.name = ? order by id limit ? offset ?", result.getSqlWithoutParameters());
+        assertEquals("select p.name from products p where p.category = ? and p.name = ? order by p.id limit ? offset ?", result.getSqlWithoutParameters());
         assertTrue(Arrays.equals(new Object[]{"KITES", "cabrinha", 20, 0}, result.getParamValues()));
     }
 
@@ -36,7 +36,7 @@ public class SearchServiceTest {
         assertEquals("select p.name " +
                 "from products p inner join product_attributes a on p.id = a.product_id " +
                 "where p.category = ? and a.size = ? and p.name = ? " +
-                "order by id limit ? offset ?",
+                "order by p.id limit ? offset ?",
                 result.getSqlWithoutParameters()
         );
         assertTrue(Arrays.equals(new Object[]{"KITES", "10", "cabrinha", 20, 0}, result.getParamValues()));
@@ -51,7 +51,7 @@ public class SearchServiceTest {
         assertEquals("select distinct a.size from products p " +
                 "inner join product_attributes a on p.id = a.product_id " +
                 "where p.category = ? " +
-                        "order by id limit ? offset ?",
+                        "order by p.id limit ? offset ?",
                 result.getSqlWithoutParameters()
         );
         assertTrue(Arrays.equals(new Object[]{"KITES", 20, 40}, result.getParamValues()));
