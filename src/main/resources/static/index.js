@@ -41,12 +41,13 @@ function displayNewCriteriaRow(){
 
     var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
     //delete button
-    $("<input onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
+    var deleteButton = $("<input onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
         type : 'button',
         id : 'delete'+criteriaCount,
-        value : 'Del',
         class: "form-control"
      }).appendTo(thirdColumn)
+     $("<i>").attr("class", "fas fa-trash").appendTo(deleteButton)
+
 
     criteriaCount = criteriaCount + 1;
 }
@@ -71,7 +72,7 @@ function populateValues(divCount){
 
     //delete previous options in select
     $("#"+criteriaValueIdPrefix+divCount).empty();
-     $("<option>").text("none").appendTo("#"+criteriaValueIdPrefix+divCount);
+    $("<option>").text("none").appendTo("#"+criteriaValueIdPrefix+divCount);
 
     var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
     var result = { "target" : currentCriteria}
