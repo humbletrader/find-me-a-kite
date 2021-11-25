@@ -18,7 +18,7 @@ public class SearchRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<String> searchDistinctValues(SearchStatement searchStatement){
+    public List<String> searchDistinctValues(ParameterizedStatement searchStatement){
         logger.info("searching for distinct values with : {} ", searchStatement);
         return jdbcTemplate.query(searchStatement.getSqlWithoutParameters(),
                 (rs, rowCount) -> rs.getString(1),
@@ -26,11 +26,12 @@ public class SearchRepository {
         );
     }
 
-    public List<SearchResult> pagedSearchByCriteriaV2(SearchStatement searchStatement){
+    public List<SearchResult> pagedSearchByCriteriaV2(ParameterizedStatement searchStatement){
         logger.info("searching for products with : {} ", searchStatement);
         return jdbcTemplate.query(
                 searchStatement.getSqlWithoutParameters(),
-                (rs, rowCount) -> new SearchResult(rs.getString(1), rs.getString(2), rs.getString(3)),
+                //"brand_name_version", "link", "price", "size"
+                (rs, rowCount) -> new SearchResult(rs.getString(1), rs.getString(2), rs.getDouble(3), rs.getString(4)),
                 searchStatement.getParamValues()
         );
     }

@@ -1,14 +1,15 @@
 package com.github.humbletrader.findmeakite.search;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class SearchStatement {
+public class ParameterizedStatement {
 
     private String sqlWithoutParameters;
-    private Object[] paramValues;
+    private List<Object> paramValues;
 
 
-    public SearchStatement(String sqlWithoutParameters, Object[] values){
+    public ParameterizedStatement(String sqlWithoutParameters, List<Object> values){
         this.sqlWithoutParameters = sqlWithoutParameters;
         this.paramValues = values;
     }
@@ -17,15 +18,15 @@ public class SearchStatement {
         return sqlWithoutParameters;
     }
 
-    public Object[] getParamValues() {
+    public List<Object> getParamValues() {
         return paramValues;
     }
 
     @Override
     public String toString() {
-        return "SearchStatement{" +
+        return "ParameterizedStatement{" +
                 "sqlWithoutParameters='" + sqlWithoutParameters + '\'' +
-                ", paramValues=" + Arrays.toString(paramValues) +
+                ", paramValues=" + paramValues +
                 '}';
     }
 }

@@ -25,19 +25,19 @@ public class SearchService {
     }
 
     public List<String> searchDistinctValuesByCriteria(DistinctValuesSearchCriteria criteria){
-        SearchStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), true, criteria.getTarget());
+        ParameterizedStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), true, criteria.getTarget());
         return searchRepository.searchDistinctValues(searchStatement);
     }
 
     public List<SearchResult> searchByCriteriaV2(SearchCriteriaV2 criteria){
         logger.info("searching products by criteria {} ", criteria);
 
-        SearchStatement sql = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.of(criteria.getPage()), false, "name", "link", "brand_name_version");
+        ParameterizedStatement sql = buildSearchSql(criteria.getCriteria(), criteria.getPage());
 
         return searchRepository.pagedSearchByCriteriaV2(sql);
     }
 
-    SearchStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, boolean distinct, String... columns){
+    ParameterizedStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, boolean distinct, String... columns){
 
         StringBuilder selectString = new StringBuilder("select");
         if(distinct) selectString.append(" distinct");
@@ -54,7 +54,7 @@ public class SearchService {
 
         StringBuilder fromString = new StringBuilder(" from");
         StringBuilder whereString = new StringBuilder(" where");
-        List<Object> valuesForParameters = new ArrayList<>();
+
 
         fromString.append(" products p");
         if(hasColumnsFromProductAttributesInSelect || !Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
@@ -62,6 +62,7 @@ public class SearchService {
         }
         selectString.append(fromString);
 
+        List<Object> valuesForParameters = new ArrayList<>();
         whereString.append(" p.category = ?");
         valuesForParameters.add(criteria.get("category"));
 
@@ -85,7 +86,48 @@ public class SearchService {
             valuesForParameters.add(startOfPage);
         }
 
-        return new SearchStatement(selectString.toString(), valuesForParameters.toArray());
+        return new ParameterizedStatement(selectString.toString(), valuesForParameters);
+    }
+
+    ParameterizedStatement buildSearchSql(Map<String, String> criteria, int page) {
+        //"brand_name_version", "link", "price", "size"
+        StringBuilder select = new StringBuilder("select");
+        select.append(" p.brand_name_version, p.link, a.price, a.size");
+        select.append(" from products p inner join product_attributes a");
+        select.append(" on p.id = a.product_id");
+
+        ParameterizedStatement whereStatement = whereFromCriteria(criteria);
+        select.append(whereStatement.getSqlWithoutParameters());
+        List<Object> valuesForParameters = whereStatement.getParamValues();
+
+        int startOfPage = page * ROWS_PER_PAGE;
+        select.append(" order by p.id limit ? offset ?");
+        valuesForParameters.add(ROWS_PER_PAGE);
+        valuesForParameters.add(startOfPage);
+
+        return new ParameterizedStatement(select.toString(), valuesForParameters);
+    }
+
+    ParameterizedStatement whereFromCriteria(Map<String, String> criteria){
+        StringBuilder whereString = new StringBuilder(" where");
+        List<Object> valuesForParameters = new ArrayList<>();
+
+        whereString.append(" p.category = ?");
+        valuesForParameters.add(criteria.get("category"));
+
+        for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
+            if(!currentCriteria.getKey().equals("category")){
+                whereString.append(" and").append(prefixedColumn(currentCriteria.getKey())).append(" = ?");
+                if(currentCriteria.getKey().equals("year")){
+                    //year is an integer in DB (temporary)
+                    valuesForParameters.add(Integer.valueOf(currentCriteria.getValue()));
+                }else{
+                    valuesForParameters.add(currentCriteria.getValue().toLowerCase());
+                }
+            }
+        }
+
+        return new ParameterizedStatement(whereString.toString(), valuesForParameters);
     }
 
     private boolean isProductAttributeTableColumn(String colName){

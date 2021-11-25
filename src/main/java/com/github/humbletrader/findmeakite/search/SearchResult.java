@@ -2,18 +2,16 @@ package com.github.humbletrader.findmeakite.search;
 
 public class SearchResult {
 
-    private String productName;
-    private String link;
-    private String brandNameVersion;
+    private final String link;
+    private final String brandNameVersion;
+    private double price;
+    private final String size;
 
-    public SearchResult(String productName, String link, String brandNameVersion) {
-        this.productName = productName;
-        this.link = link;
+    public SearchResult(String brandNameVersion, String link, double price, String size) {
         this.brandNameVersion = brandNameVersion;
-    }
-
-    public String getProductName() {
-        return productName;
+        this.link = link;
+        this.price = price;
+        this.size = size;
     }
 
     public String getLink() {
@@ -22,5 +20,13 @@ public class SearchResult {
 
     public String getBrandNameVersion() {
         return brandNameVersion;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getSize() {
+        return size;
     }
 }

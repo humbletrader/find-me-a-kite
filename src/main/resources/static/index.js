@@ -7,7 +7,7 @@ $(window).on( "load", function() {
     console.log( "window loaded" );
 });
 
-const criteria = ["none", "brand", "name", "version", "year", "size"];
+var criteria = ["brand", "name", "version", "year", "size"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
@@ -129,8 +129,8 @@ function find(){
                 linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link));
                 resultLineTr.append(linkTd)
 
-                $("<td>").text("size").appendTo(resultLineTr)
-                $("<td>").text("price").appendTo(resultLineTr)
+                $("<td>").text(item.size).appendTo(resultLineTr)
+                $("<td>").text(item.price).appendTo(resultLineTr)
 
                 $("#searchResults").append(resultLineTr);
             });
