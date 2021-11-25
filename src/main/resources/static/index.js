@@ -41,8 +41,7 @@ function displayNewCriteriaRow(){
 
     var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
     //delete button
-    var deleteButton = $("<input onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
-        type : 'button',
+    var deleteButton = $("<button onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
         id : 'delete'+criteriaCount,
         class: "form-control"
      }).appendTo(thirdColumn)
