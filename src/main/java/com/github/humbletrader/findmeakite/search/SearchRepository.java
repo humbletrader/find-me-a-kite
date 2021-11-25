@@ -22,7 +22,7 @@ public class SearchRepository {
         logger.info("searching for distinct values with : {} ", searchStatement);
         return jdbcTemplate.query(searchStatement.getSqlWithoutParameters(),
                 (rs, rowCount) -> rs.getString(1),
-                searchStatement.getParamValues()
+                searchStatement.getParamValues().toArray()
         );
     }
 

@@ -7,7 +7,7 @@ $(window).on( "load", function() {
     console.log( "window loaded" );
 });
 
-var criteria = ["brand", "name", "version", "year", "size"];
+var criteria = ["none", "brand", "name", "version", "year", "size"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
