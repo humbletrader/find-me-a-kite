@@ -32,7 +32,7 @@ public class SearchRepository {
                 searchStatement.getSqlWithoutParameters(),
                 //"brand_name_version", "link", "price", "size"
                 (rs, rowCount) -> new SearchResult(rs.getString(1), rs.getString(2), rs.getDouble(3), rs.getString(4)),
-                searchStatement.getParamValues()
+                searchStatement.getParamValues().toArray()
         );
     }
 
