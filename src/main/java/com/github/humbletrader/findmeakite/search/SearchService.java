@@ -25,7 +25,7 @@ public class SearchService {
     }
 
     public List<String> searchDistinctValuesByCriteria(DistinctValuesSearchCriteria criteria){
-        ParameterizedStatement searchStatement = buildSqlWithFilters(criteria.getCriteria(), OptionalInt.empty(), true, criteria.getTarget());
+        ParameterizedStatement searchStatement = buildDistinctValuesSql(criteria.getCriteria(), criteria.getTarget());
         return searchRepository.searchDistinctValues(searchStatement);
     }
 
@@ -37,56 +37,25 @@ public class SearchService {
         return searchRepository.pagedSearchByCriteriaV2(sql);
     }
 
-    ParameterizedStatement buildSqlWithFilters(Map<String, String> criteria, OptionalInt page, boolean distinct, String... columns){
+    ParameterizedStatement buildDistinctValuesSql(Map<String, String> criteria, String column){
 
-        StringBuilder selectString = new StringBuilder("select");
-        if(distinct) selectString.append(" distinct");
-        boolean hasColumnsFromProductAttributesInSelect = false;
-        for (int i = 0; i < columns.length; i++) {
-            if(isProductAttributeTableColumn(columns[i])){
-               hasColumnsFromProductAttributesInSelect = true;
-            }
-            selectString.append(prefixedColumn(columns[i]));
-            if (i < columns.length - 1) {
-                selectString.append(",");
-            }
-        }
+        StringBuilder selectString = new StringBuilder("select distinct");
 
-        StringBuilder fromString = new StringBuilder(" from");
-        StringBuilder whereString = new StringBuilder(" where");
+        boolean isColumnFromProductionAttribute = isProductAttributeTableColumn(column);
+        selectString.append(prefixedColumn(column));
 
 
-        fromString.append(" products p");
-        if(hasColumnsFromProductAttributesInSelect || !Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
+        StringBuilder fromString = new StringBuilder(" from products p");
+
+        if(isColumnFromProductionAttribute || !Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
             fromString.append(" inner join product_attributes a on p.id = a.product_id");
         }
         selectString.append(fromString);
 
-        List<Object> valuesForParameters = new ArrayList<>();
-        whereString.append(" p.category = ?");
-        valuesForParameters.add(criteria.get("category"));
+        ParameterizedStatement whereParameterizedStatement = whereFromCriteria(criteria);
+        selectString.append(whereParameterizedStatement.getSqlWithoutParameters());
 
-        for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
-            if(!currentCriteria.getKey().equals("category")){
-                whereString.append(" and").append(prefixedColumn(currentCriteria.getKey())).append(" = ?");
-                if(currentCriteria.getKey().equals("year")){
-                    //year is an integer in DB (temporary)
-                    valuesForParameters.add(Integer.valueOf(currentCriteria.getValue()));
-                }else{
-                    valuesForParameters.add(currentCriteria.getValue().toLowerCase());
-                }
-            }
-        }
-        selectString.append(whereString);
-
-        if(page.isPresent()){
-            int startOfPage = page.getAsInt() * ROWS_PER_PAGE;
-            selectString.append(" order by p.id limit ? offset ?");
-            valuesForParameters.add(ROWS_PER_PAGE);
-            valuesForParameters.add(startOfPage);
-        }
-
-        return new ParameterizedStatement(selectString.toString(), valuesForParameters);
+        return new ParameterizedStatement(selectString.toString(), whereParameterizedStatement.getParamValues());
     }
 
     ParameterizedStatement buildSearchSql(Map<String, String> criteria, int page) {
