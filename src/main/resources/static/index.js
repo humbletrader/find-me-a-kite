@@ -130,7 +130,7 @@ function find(){
                 resultLineTr.append(linkTd)
 
                 $("<td>").text(item.size).appendTo(resultLineTr)
-                $("<td>").text(item.price).appendTo(resultLineTr)
+                $("<td>").text(item.price.toFixed(2)).appendTo(resultLineTr)
 
                 $("#searchResults").append(resultLineTr);
             });
