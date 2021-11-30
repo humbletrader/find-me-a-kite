@@ -136,7 +136,8 @@ function find(){
 
         if(searchResultPage.nextPage){
             var paginationUl = $(".pagination")
-            $("li").text("Next").attr("class", "page-item").appendTo(paginationUl)
+            var pageLi = $("li").attr("class", "page-item").appendTo(paginationUl)
+            $("a").attr("class", "page-link").text("Next").appendTo(pageLi)
         }
    })
    .fail(function( xhr, status, errorThrown ) {
