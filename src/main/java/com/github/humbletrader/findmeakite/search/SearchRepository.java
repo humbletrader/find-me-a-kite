@@ -26,7 +26,7 @@ public class SearchRepository {
         );
     }
 
-    public List<SearchItem> pagedSearchByCriteriaV2(ParameterizedStatement searchStatement){
+    public List<SearchItem> pagedSearchByCriteria(ParameterizedStatement searchStatement){
         logger.info("searching for products with : {} ", searchStatement);
         return jdbcTemplate.query(
                 searchStatement.getSqlWithoutParameters(),

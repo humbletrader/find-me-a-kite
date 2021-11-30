@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static java.lang.Math.min;
+
 @Service
 public class SearchService {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchService.class);
 
-    public final static int ROWS_PER_PAGE = 20;
+    public final static int ROWS_DISPLAYED_PER_PAGE = 20;
 
     private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = new HashSet<>(Arrays.asList("price", "size", "color"));
     @Autowired
@@ -33,8 +35,16 @@ public class SearchService {
         logger.info("searching products by criteria {} ", criteria);
 
         ParameterizedStatement sql = buildSearchSql(criteria.getCriteria(), criteria.getPage());
+        List<SearchItem> result = searchRepository.pagedSearchByCriteria(sql);
 
-        return new SearchResultPage(criteria.getPage(), searchRepository.pagedSearchByCriteriaV2(sql), true);
+        boolean hasNextPage = result.size() > ROWS_DISPLAYED_PER_PAGE;
+        logger.info("search returned {} items this means next page is available {}", result.size(), hasNextPage);
+
+        return new SearchResultPage(
+                criteria.getPage(),
+                result.subList(0, min(ROWS_DISPLAYED_PER_PAGE, result.size())),
+                hasNextPage
+        );
     }
 
     ParameterizedStatement buildDistinctValuesSql(Map<String, String> criteria, String column){
@@ -69,9 +79,9 @@ public class SearchService {
         select.append(whereStatement.getSqlWithoutParameters());
         List<Object> valuesForParameters = whereStatement.getParamValues();
 
-        int startOfPage = page * ROWS_PER_PAGE;
+        int startOfPage = page * ROWS_DISPLAYED_PER_PAGE;
         select.append(" order by p.id limit ? offset ?");
-        valuesForParameters.add(ROWS_PER_PAGE);
+        valuesForParameters.add(ROWS_DISPLAYED_PER_PAGE + 1); //request one more row to detect if there is a next page available
         valuesForParameters.add(startOfPage);
 
         return new ParameterizedStatement(select.toString(), valuesForParameters);
