@@ -134,7 +134,7 @@ function find(){
             $("#searchResults").append(resultLineTr);
         });
 
-        if(searchResultPage.hasNext){
+        if(searchResultPage.nextPage){
             var paginationUl = $(".pagination")
             $("li").text("Next").attr("class", "page-item").appendTo(paginationUl)
         }

@@ -18,7 +18,7 @@ public class SearchResultPage {
         return currentPage;
     }
 
-    public boolean hasNext() {
+    public boolean isNextPage() {
         return hasNext;
     }
 
