@@ -34,7 +34,7 @@ public class SearchService {
 
         ParameterizedStatement sql = buildSearchSql(criteria.getCriteria(), criteria.getPage());
 
-        return new SearchResultPage(0, searchRepository.pagedSearchByCriteriaV2(sql), true);
+        return new SearchResultPage(criteria.getPage(), searchRepository.pagedSearchByCriteriaV2(sql), true);
     }
 
     ParameterizedStatement buildDistinctValuesSql(Map<String, String> criteria, String column){
