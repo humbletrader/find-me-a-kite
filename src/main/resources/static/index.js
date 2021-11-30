@@ -104,11 +104,11 @@ function populateValues(divCount){
          });
 }
 
-function find(){
+function find(pageToFind){
     $("#searchResults").empty();
 
    var postData = {
-    "page" : 0,
+    "page" : pageToFind,
     "criteria" : collectCriteriaValues(criteriaCount)
    }
    console.log("sending to server..."+JSON.stringify(postData));
@@ -144,9 +144,8 @@ function find(){
             var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
             $("<a>").attr({
                 "class" : "page-link",
-                "onclick" : "find()",
-                "text" : "next"
-                }).appendTo(pageLi)
+                "onclick" : "find("+(pageToFind+1)+")",
+                }).text("Next").appendTo(pageLi)
         }
    })
    .fail(function( xhr, status, errorThrown ) {
