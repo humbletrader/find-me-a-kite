@@ -136,7 +136,7 @@ function find(){
 
         //handle pagination
         var paginationUl = $(".pagination")
-        for(i=0; i < searchResultPage.page.; i++){
+        for(i=0; i < searchResultPage.page; i++){
             var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
             $("<a>").attr("class", "page-link").text(i+1).appendTo(pageLi)
         }
