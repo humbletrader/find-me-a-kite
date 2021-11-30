@@ -134,8 +134,13 @@ function find(){
             $("#searchResults").append(resultLineTr);
         });
 
+        //handle pagination
+        var paginationUl = $(".pagination")
+        for(i=0; i < searchResultPage.page.; i++){
+            var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
+            $("<a>").attr("class", "page-link").text(i+1).appendTo(pageLi)
+        }
         if(searchResultPage.nextPage){
-            var paginationUl = $(".pagination")
             var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
             $("<a>").attr("class", "page-link").text("Next").appendTo(pageLi)
         }
