@@ -29,12 +29,12 @@ public class SearchService {
         return searchRepository.searchDistinctValues(searchStatement);
     }
 
-    public List<SearchResult> searchByCriteriaV2(SearchCriteriaV2 criteria){
+    public SearchResultPage searchByCriteria(SearchCriteriaV2 criteria){
         logger.info("searching products by criteria {} ", criteria);
 
         ParameterizedStatement sql = buildSearchSql(criteria.getCriteria(), criteria.getPage());
 
-        return searchRepository.pagedSearchByCriteriaV2(sql);
+        return new SearchResultPage(0, searchRepository.pagedSearchByCriteriaV2(sql), true);
     }
 
     ParameterizedStatement buildDistinctValuesSql(Map<String, String> criteria, String column){

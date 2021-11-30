@@ -6,8 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-
 
 @RestController
 @RequestMapping(path = "/")
@@ -33,9 +31,9 @@ public class SearchController {
         return new ResponseEntity<>(searchService.searchDistinctValuesByCriteria(data), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/searchv2")
-    public ResponseEntity<Iterable<SearchResult>> retrieveProductV2(@RequestBody SearchCriteriaV2 criteria) {
+    @PostMapping(path = "/search")
+    public ResponseEntity<SearchResultPage> retrieveProduct(@RequestBody SearchCriteriaV2 criteria) {
         logger.info("searching products by {} ", criteria);
-        return new ResponseEntity<>(searchService.searchByCriteriaV2(criteria), HttpStatus.OK);
+        return new ResponseEntity<>(searchService.searchByCriteria(criteria), HttpStatus.OK);
     }
 }

@@ -7,6 +7,7 @@ $(window).on( "load", function() {
     console.log( "window loaded" );
 });
 
+var currentResultsPage = 0;
 var criteria = ["none", "brand", "name", "version", "year", "size"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
@@ -111,38 +112,41 @@ function find(){
     "criteria" : collectCriteriaValues(criteriaCount)
    }
    console.log("sending to server..."+JSON.stringify(postData));
+   $.ajax({
+        url: "/search",
+        contentType : "application/json",
+        data: JSON.stringify(postData),
+        type: "POST",
+        dataType : "json",
+   })
+   .done(function( searchResultPage ) {
+        console.log(searchResultPage);
+        searchResultPage.items.forEach(item => {
+            const resultLineTr = $("<tr>");
 
+            const linkTd = $("<td>")
+            linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link)).attr("target", "_blank");
+            resultLineTr.append(linkTd)
 
-    $.ajax({
-            url: "/searchv2",
-            contentType : "application/json",
-            data: JSON.stringify(postData),
-            type: "POST",
-            dataType : "json",
-     })
-     .done(function( searchResultArray ) {
-            console.log(searchResultArray);
-            searchResultArray.forEach(item => {
-                const resultLineTr = $("<tr>");
+            $("<td>").text(item.size).appendTo(resultLineTr)
+            $("<td>").text(item.price.toFixed(2)).appendTo(resultLineTr)
 
-                const linkTd = $("<td>")
-                linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link));
-                resultLineTr.append(linkTd)
+            $("#searchResults").append(resultLineTr);
+        });
 
-                $("<td>").text(item.size).appendTo(resultLineTr)
-                $("<td>").text(item.price.toFixed(2)).appendTo(resultLineTr)
-
-                $("#searchResults").append(resultLineTr);
-            });
-     })
-     .fail(function( xhr, status, errorThrown ) {
+        if(searchResultPage.hasNext){
+            var paginationUl = $(".pagination")
+            $("li").text("Next").attr("class", "page-item").appendTo(paginationUl)
+        }
+   })
+   .fail(function( xhr, status, errorThrown ) {
         alert( "Sorry, there was a problem!" );
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );
         console.dir( xhr );
-     })
-     .always(function( xhr, status ) {
-        console.log( "The request is complete!" );
-     });
+   })
+   .always(function( xhr, status ) {
+       console.log( "The request is complete!" );
+   });
 }
 
