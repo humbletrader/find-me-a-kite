@@ -142,7 +142,11 @@ function find(){
         }
         if(searchResultPage.nextPage){
             var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
-            $("<a>").attr("class", "page-link").text("Next").appendTo(pageLi)
+            $("<a>").attr({
+                "class" : "page-link",
+                "onclick" : "find()",
+                "text" : "next"
+                }).appendTo(pageLi)
         }
    })
    .fail(function( xhr, status, errorThrown ) {
