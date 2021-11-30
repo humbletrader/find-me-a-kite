@@ -147,7 +147,7 @@ function find(pageToFind){
         var pageLi = $("<li>").attr("class", "page-item active").appendTo(paginationUl)
         $("<a>").attr({
             "class" : "page-link"
-        }).text(searchResultPage.currentPage).appendTo(pageLi)
+        }).text(searchResultPage.currentPage + 1).appendTo(pageLi)
 
         if(searchResultPage.nextPage){
             var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
