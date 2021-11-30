@@ -125,7 +125,7 @@ function find(pageToFind){
             const resultLineTr = $("<tr>");
 
             const linkTd = $("<td>")
-            linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link)).attr("target", "_blank");
+            linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link).attr("target", "_blank"));
             resultLineTr.append(linkTd)
 
             $("<td>").text(item.size).appendTo(resultLineTr)
@@ -141,9 +141,14 @@ function find(pageToFind){
             var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
             $("<a>").attr({
                 "class" : "page-link",
-                "onclick": "find("+i+")"
+                "onclick" : "find("+i+")"
             }).text(i+1).appendTo(pageLi)
         }
+        var pageLi = $("<li>").attr("class", "page-item active").appendTo(paginationUl)
+        $("<a>").attr({
+            "class" : "page-link"
+        }).text(searchResultPage.currentPage).appendTo(pageLi)
+
         if(searchResultPage.nextPage){
             var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
             $("<a>").attr({
