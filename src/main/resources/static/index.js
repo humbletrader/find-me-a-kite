@@ -14,7 +14,15 @@ var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
 var criteriaNameIdPrefix = "criteriaValue";
 
+function disableFilterInputsForLevel(level){
+    $("#"+criteriaNameIdPrefix+level).attr("disabled", "disabled");
+    $("#"+criteriaValueIdPrefix+level).attr("disabled", "disabled");
+}
+
 function displayNewCriteriaRow(){
+    //disable previous criteria
+    if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount - 1)
+
     //div
     var newSearchCriteriaRow = $("<div>")
         .attr({
@@ -47,7 +55,6 @@ function displayNewCriteriaRow(){
         class: "form-control"
      }).appendTo(thirdColumn)
      $("<i>").attr("class", "fas fa-trash").appendTo(deleteButton)
-
 
     criteriaCount = criteriaCount + 1;
 }
@@ -105,6 +112,9 @@ function populateValues(divCount){
 }
 
 function find(pageToFind){
+    //disable last criteria
+    if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount)
+
     $("#searchResults").empty();
 
    var postData = {
