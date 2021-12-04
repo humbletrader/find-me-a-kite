@@ -15,6 +15,7 @@ var criteriaValueIdPrefix = "criteria";
 var criteriaNameIdPrefix = "criteriaValue";
 
 function disableFilterInputsForLevel(level){
+    console.log("disabling input #"+criteriaNameIdPrefix+level)
     $("#"+criteriaNameIdPrefix+level).attr("disabled", "disabled");
     $("#"+criteriaValueIdPrefix+level).attr("disabled", "disabled");
 }
@@ -113,7 +114,7 @@ function populateValues(divCount){
 
 function find(pageToFind){
     //disable last criteria
-    if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount)
+    if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount-1)
 
     $("#searchResults").empty();
 
