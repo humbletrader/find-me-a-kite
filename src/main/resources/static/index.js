@@ -1,12 +1,4 @@
 
-$(document).ready(function() {
-    console.log( "document loaded" );
-});
-
-$(window).on( "load", function() {
-    console.log( "window loaded" );
-});
-
 var chooseItemText = "Choose..."
 var currentResultsPage = 0;
 var criteria = ["brand", "name", "version", "year", "size"];
@@ -21,7 +13,21 @@ function disableFilterInputsForLevel(level){
     $("#"+criteriaValueIdPrefix+level).attr("disabled", "disabled");
 }
 
+function previousFormsHaveCorrectStatus(){
+    if(criteriaCount > 0){
+        var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
+        var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
+        console.log("selected criteria: "+selectedCriteria +" and value: "+selectedCriteriaValue);
+        return selectedCriteria != "none" && selectedCriteriaValue != "none";
+    }else{
+        return true;
+    }
+}
+
 function displayNewCriteriaRow(){
+
+    if(!previousFormsHaveCorrectStatus()) alert("please fill the existing forms before adding new filters")
+
     //disable previous criteria
     if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount - 1)
 
@@ -116,6 +122,8 @@ function populateValues(divCount){
 }
 
 function find(pageToFind){
+
+    if(!previousFormsHaveCorrectStatus()) alert("please fill all forms before search !")
     //disable last criteria
     if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount-1)
 
