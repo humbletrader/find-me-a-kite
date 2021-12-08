@@ -26,7 +26,10 @@ function previousFormsHaveCorrectStatus(){
 
 function displayNewCriteriaRow(){
 
-    if(!previousFormsHaveCorrectStatus()) alert("please fill the existing forms before adding new filters")
+    if(!previousFormsHaveCorrectStatus()){
+        alert("please fill the existing forms before adding new filters");
+        return;
+    }
 
     //disable previous criteria
     if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount - 1)
@@ -123,7 +126,10 @@ function populateValues(divCount){
 
 function find(pageToFind){
 
-    if(!previousFormsHaveCorrectStatus()) alert("please fill all forms before search !")
+    if(!previousFormsHaveCorrectStatus()){
+        alert("please fill all forms before search !");
+        return; 
+    }
     //disable last criteria
     if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount-1)
 
