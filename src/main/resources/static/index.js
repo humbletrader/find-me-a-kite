@@ -58,8 +58,10 @@ function displayNewCriteriaRow(){
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
             .attr("class", "form-control")
+            .attr("disabled", "disabled");
             .appendTo(newSearchCriteriaRow);
     $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForValues);
+
 
     var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
     //delete button
@@ -110,7 +112,9 @@ function populateValues(divCount){
          .done(function( distinctValues ) {
              console.log(distinctValues);
              distinctValues.forEach(item => {
-                $("<option>").text(item).appendTo("#"+criteriaValueIdPrefix+divCount);
+                var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount)
+                criteriaValueHtmlSelect.removeAttr("disabled")
+                $("<option>").text(item).appendTo(criteriaValueHtmlSelect);
              });
          })
          .fail(function( xhr, status, errorThrown ) {
@@ -128,7 +132,7 @@ function find(pageToFind){
 
     if(!previousFormsHaveCorrectStatus()){
         alert("please fill all forms before search !");
-        return; 
+        return;
     }
     //disable last criteria
     if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount-1)
