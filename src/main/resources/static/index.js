@@ -15,8 +15,8 @@ function disableFilterInputsForLevel(level){
 
 function previousFormsHaveCorrectStatus(){
     if(criteriaCount > 0){
-        var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
-        var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
+        var selectedCriteria = $("#"+criteriaNameIdPrefix + (criteriaCount-1)).val();
+        var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + (criteriaCount-1)).val();
         console.log("selected criteria: "+selectedCriteria +" and value: "+selectedCriteriaValue);
         return selectedCriteria != "none" && selectedCriteriaValue != "none";
     }else{
