@@ -7,8 +7,9 @@ $(window).on( "load", function() {
     console.log( "window loaded" );
 });
 
+var chooseItemText = "Choose..."
 var currentResultsPage = 0;
-var criteria = ["none", "brand", "name", "version", "year", "size"];
+var criteria = ["brand", "name", "version", "year", "size"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
@@ -39,15 +40,17 @@ function displayNewCriteriaRow(){
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .attr("class", "form-control")
         .appendTo(firstColumn);
+    $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForCriteria);
+
     criteria.forEach(item => {
-            $("<option>").text(item).appendTo(selectHtmlForCriteria);
+            $("<option>").val(item).text(item).appendTo(selectHtmlForCriteria);
     });
 
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
             .attr("class", "form-control")
             .appendTo(newSearchCriteriaRow);
-    $("<option>").val("none").text("none").appendTo(selectHtmlForValues);
+    $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForValues);
 
     var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
     //delete button
@@ -80,7 +83,7 @@ function populateValues(divCount){
 
     //delete previous options in select
     $("#"+criteriaValueIdPrefix+divCount).empty();
-    $("<option>").text("none").appendTo("#"+criteriaValueIdPrefix+divCount);
+    $("<option>").val("none").text(chooseItemText).appendTo("#"+criteriaValueIdPrefix+divCount);
 
     var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
     var result = { "target" : currentCriteria}
