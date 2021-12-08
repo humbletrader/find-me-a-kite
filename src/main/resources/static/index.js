@@ -58,7 +58,7 @@ function displayNewCriteriaRow(){
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
             .attr("class", "form-control")
-            .attr("disabled", "disabled");
+            .attr("disabled", "disabled")
             .appendTo(newSearchCriteriaRow);
     $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForValues);
 
@@ -112,8 +112,8 @@ function populateValues(divCount){
          .done(function( distinctValues ) {
              console.log(distinctValues);
              distinctValues.forEach(item => {
-                var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount)
-                criteriaValueHtmlSelect.removeAttr("disabled")
+                var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount);
+                criteriaValueHtmlSelect.removeAttr("disabled");
                 $("<option>").text(item).appendTo(criteriaValueHtmlSelect);
              });
          })
