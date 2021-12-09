@@ -18,6 +18,7 @@ public class SearchService {
     public final static int ROWS_DISPLAYED_PER_PAGE = 20;
 
     private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = new HashSet<>(Arrays.asList("price", "size", "color"));
+
     @Autowired
     private SearchRepository searchRepository;
 
@@ -64,7 +65,7 @@ public class SearchService {
 
         ParameterizedStatement whereParameterizedStatement = whereFromCriteria(criteria);
         selectString.append(whereParameterizedStatement.getSqlWithoutParameters());
-
+        selectString.append(" order by").append(column);
         return new ParameterizedStatement(selectString.toString(), whereParameterizedStatement.getParamValues());
     }
 
@@ -90,6 +91,28 @@ public class SearchService {
     ParameterizedStatement whereFromCriteria(Map<String, String> criteria){
         StringBuilder whereString = new StringBuilder(" where");
         List<Object> valuesForParameters = new ArrayList<>();
+
+        whereString.append(" p.category = ?");
+        valuesForParameters.add(criteria.get("category"));
+
+        for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
+            if(!currentCriteria.getKey().equals("category")){
+                whereString.append(" and").append(prefixedColumn(currentCriteria.getKey())).append(" = ?");
+                if(currentCriteria.getKey().equals("year")){
+                    //year is an integer in DB (temporary)
+                    valuesForParameters.add(Integer.valueOf(currentCriteria.getValue()));
+                }else{
+                    valuesForParameters.add(currentCriteria.getValue().toLowerCase());
+                }
+            }
+        }
+
+        return new ParameterizedStatement(whereString.toString(), valuesForParameters);
+    }
+
+    ParameterizedStatement orderByFromCriteria(Map<String, String> criteria){
+        StringBuilder whereString = new StringBuilder(" order by");
+
 
         whereString.append(" p.category = ?");
         valuesForParameters.add(criteria.get("category"));
