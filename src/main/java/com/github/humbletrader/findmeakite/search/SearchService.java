@@ -65,7 +65,7 @@ public class SearchService {
 
         ParameterizedStatement whereParameterizedStatement = whereFromCriteria(criteria);
         selectString.append(whereParameterizedStatement.getSqlWithoutParameters());
-        selectString.append(" order by").append(column);
+        selectString.append(" order by ").append(column);
         return new ParameterizedStatement(selectString.toString(), whereParameterizedStatement.getParamValues());
     }
 
