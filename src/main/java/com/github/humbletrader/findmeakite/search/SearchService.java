@@ -110,28 +110,6 @@ public class SearchService {
         return new ParameterizedStatement(whereString.toString(), valuesForParameters);
     }
 
-    ParameterizedStatement orderByFromCriteria(Map<String, String> criteria){
-        StringBuilder whereString = new StringBuilder(" order by");
-
-
-        whereString.append(" p.category = ?");
-        valuesForParameters.add(criteria.get("category"));
-
-        for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
-            if(!currentCriteria.getKey().equals("category")){
-                whereString.append(" and").append(prefixedColumn(currentCriteria.getKey())).append(" = ?");
-                if(currentCriteria.getKey().equals("year")){
-                    //year is an integer in DB (temporary)
-                    valuesForParameters.add(Integer.valueOf(currentCriteria.getValue()));
-                }else{
-                    valuesForParameters.add(currentCriteria.getValue().toLowerCase());
-                }
-            }
-        }
-
-        return new ParameterizedStatement(whereString.toString(), valuesForParameters);
-    }
-
     private boolean isProductAttributeTableColumn(String colName){
         return PRODUCT_ATTRIBUTES_COLUMNS.contains(colName);
     }
