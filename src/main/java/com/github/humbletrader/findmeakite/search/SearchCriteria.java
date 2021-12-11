@@ -2,12 +2,12 @@ package com.github.humbletrader.findmeakite.search;
 
 import java.util.Map;
 
-public class SearchCriteriaV2 {
+public class SearchCriteria {
 
     private int page;
     private Map<String, String> criteria;
 
-    public SearchCriteriaV2(int page, Map<String, String> criteria) {
+    public SearchCriteria(int page, Map<String, String> criteria) {
         this.page = page;
         this.criteria = criteria;
     }
@@ -22,7 +22,7 @@ public class SearchCriteriaV2 {
 
     @Override
     public String toString() {
-        return "SearchCriteriaV2{" +
+        return "SearchCriteria{" +
                 "page=" + page +
                 ", criteria=" + criteria +
                 '}';
