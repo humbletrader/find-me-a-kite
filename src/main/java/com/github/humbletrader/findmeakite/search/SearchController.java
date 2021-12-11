@@ -32,7 +32,7 @@ public class SearchController {
     }
 
     @PostMapping(path = "/search")
-    public ResponseEntity<SearchResultPage> retrieveProduct(@RequestBody SearchCriteriaV2 criteria) {
+    public ResponseEntity<SearchResultPage> retrieveProduct(@RequestBody SearchCriteria criteria) {
         logger.info("searching products by {} ", criteria);
         return new ResponseEntity<>(searchService.searchByCriteria(criteria), HttpStatus.OK);
     }

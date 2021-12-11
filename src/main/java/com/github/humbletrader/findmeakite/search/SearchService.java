@@ -32,7 +32,7 @@ public class SearchService {
         return searchRepository.searchDistinctValues(searchStatement);
     }
 
-    public SearchResultPage searchByCriteria(SearchCriteriaV2 criteria){
+    public SearchResultPage searchByCriteria(SearchCriteria criteria){
         logger.info("searching products by criteria {} ", criteria);
 
         ParameterizedStatement sql = buildSearchSql(criteria.getCriteria(), criteria.getPage());
@@ -81,7 +81,7 @@ public class SearchService {
         List<Object> valuesForParameters = whereStatement.getParamValues();
 
         int startOfPage = page * ROWS_DISPLAYED_PER_PAGE;
-        select.append(" order by p.id limit ? offset ?");
+        select.append(" order by a.price limit ? offset ?");
         valuesForParameters.add(ROWS_DISPLAYED_PER_PAGE + 1); //request one more row to detect if there is a next page available
         valuesForParameters.add(startOfPage);
 
