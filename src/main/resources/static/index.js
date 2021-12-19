@@ -135,7 +135,7 @@ function find(pageToFind){
         return;
     }
     //disable last criteria
-    if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount-1)
+    //if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount-1)
 
     $("#searchResults").empty();
 
