@@ -1,6 +1,5 @@
 package com.github.humbletrader.findmeakite.search;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ParameterizedStatement {
@@ -12,6 +11,11 @@ public class ParameterizedStatement {
     public ParameterizedStatement(String sqlWithoutParameters, List<Object> values){
         this.sqlWithoutParameters = sqlWithoutParameters;
         this.paramValues = values;
+    }
+
+    public ParameterizedStatement(ParameterizedStatement initial){
+        this.sqlWithoutParameters = initial.sqlWithoutParameters;
+        this.paramValues = initial.paramValues;
     }
 
     public String getSqlWithoutParameters() {
