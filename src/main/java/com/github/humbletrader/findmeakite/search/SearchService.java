@@ -65,6 +65,7 @@ public class SearchService {
 
         ParameterizedStatement whereParameterizedStatement = whereFromCriteria(criteria);
         selectString.append(whereParameterizedStatement.getSqlWithoutParameters());
+        selectString.append(avoidForbiddenValues(column));
         selectString.append(" order by ").append(column);
         return new ParameterizedStatement(selectString.toString(), whereParameterizedStatement.getParamValues());
     }
@@ -108,6 +109,17 @@ public class SearchService {
         }
 
         return new ParameterizedStatement(whereString.toString(), valuesForParameters);
+    }
+
+    String avoidForbiddenValues(String column){
+        return
+        switch(column){
+            case "brand" -> " and brand <> 'unknown'";
+            case "year" -> " and year <> -1 and year <> -2";
+            case "version" -> " and version <> 'not needed' and version <> 'unknown'";
+            case "size" -> "";
+            default -> throw new RuntimeException("impossible to avoid forbidden values for column " + column);
+        };
     }
 
     private boolean isProductAttributeTableColumn(String colName){
