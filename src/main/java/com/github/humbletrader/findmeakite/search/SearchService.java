@@ -117,7 +117,7 @@ public class SearchService {
             case "brand" -> " and brand <> 'unknown'";
             case "year" -> " and year <> -1 and year <> -2";
             case "version" -> " and version <> 'not needed' and version <> 'unknown'";
-            case "size" -> "";
+            case "size" -> " and size <> 'unknown'";
             case "name" -> "";
             default -> throw new RuntimeException("impossible to avoid forbidden values for column " + column);
         };
