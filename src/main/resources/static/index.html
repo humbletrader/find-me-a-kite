@@ -53,6 +53,7 @@
                 <select id="category" name="category" class="form-control mb-3" onchange="deleteCriteriaBelow(0)">
                     <option value="KITES" >kite</option>
                     <option value="TWINTIPS">twintip</option>
+                    <option value="BARS">bars</option>
                 </select>
 
                 <div id="searchCriteria"></div>
@@ -81,6 +82,33 @@
 <!--                        <li class="page-item"><a class="page-link" href="#">Prev</a></li>-->
 <!--                        <li class="page-item"><a class="page-link" href="#">Next</a></li>-->
                     </ul>
+
+                <!-- The News Modal Dialog -->
+                <div class="modal" id="newsModalDialog">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">News</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <p> December 2021 - website launched on reddit </p>
+                                <p> January 2022 - improved kite and twintip detection </p>
+                                <p> January 2022 - BETA : search for bars </p>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

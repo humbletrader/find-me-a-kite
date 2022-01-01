@@ -200,3 +200,7 @@ function find(pageToFind){
    });
 }
 
+window.onload = function(){
+    $("#newsModalDialog").modal()
+}
+
