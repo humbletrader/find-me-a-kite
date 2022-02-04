@@ -57,7 +57,7 @@ public class SearchService {
 
 
         StringBuilder fromString = new StringBuilder(" from products p");
-
+        fromString.append(" inner join shops s on s.id = p.shop_id");
         if(isColumnFromProductionAttribute || !Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
             fromString.append(" inner join product_attributes a on p.id = a.product_id");
         }
@@ -74,8 +74,9 @@ public class SearchService {
         //"brand_name_version", "link", "price", "size"
         StringBuilder select = new StringBuilder("select");
         select.append(" p.brand_name_version, p.link, a.price, a.size");
-        select.append(" from products p inner join product_attributes a");
-        select.append(" on p.id = a.product_id");
+        select.append(" from products p");
+        select.append(" inner join shops s on s.id = p.shop_id");
+        select.append(" inner join product_attributes a on p.id = a.product_id");
 
         ParameterizedStatement whereStatement = whereFromCriteria(criteria);
         select.append(whereStatement.getSqlWithoutParameters());
@@ -96,8 +97,12 @@ public class SearchService {
         whereString.append(" p.category = ?");
         valuesForParameters.add(criteria.get("category"));
 
+        whereString.append(" and s.country = ?");
+        valuesForParameters.add(criteria.get("country"));
+
         for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
-            if(!currentCriteria.getKey().equals("category")){
+            String currentKey = currentCriteria.getKey();
+            if(!currentKey.equals("category") && !currentKey.equals("country")){
                 whereString.append(" and").append(prefixedColumn(currentCriteria.getKey())).append(" = ?");
                 if(currentCriteria.getKey().equals("year")){
                     //year is an integer in DB (temporary)

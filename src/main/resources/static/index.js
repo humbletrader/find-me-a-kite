@@ -81,7 +81,10 @@ function deleteCriteriaBelow(divCount){
 }
 
 function collectCriteriaValues(divCount){
-    var criteria = { "category" : $("#category").val()}
+    var criteria = {
+        "category" : $("#category").val(),
+        "country" : $("#country").val()
+    }
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
