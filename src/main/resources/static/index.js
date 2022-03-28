@@ -1,7 +1,7 @@
 
 var chooseItemText = "Choose..."
 var currentResultsPage = 0;
-var criteria = ["brand", "name", "version", "year", "size"];
+var criteria = ["brand", "name", "version", "year", "size", "condition"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";

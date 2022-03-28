@@ -52,13 +52,13 @@ public class SearchService {
 
         StringBuilder selectString = new StringBuilder("select distinct");
 
-        boolean isColumnFromProductionAttribute = isProductAttributeTableColumn(column);
+        boolean isColumnFromProductAttributes = isProductAttributeTableColumn(column);
         selectString.append(prefixedColumn(column));
 
 
         StringBuilder fromString = new StringBuilder(" from products p");
         fromString.append(" inner join shops s on s.id = p.shop_id");
-        if(isColumnFromProductionAttribute || !Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
+        if(isColumnFromProductAttributes || !Sets.intersection(criteria.keySet(), PRODUCT_ATTRIBUTES_COLUMNS).isEmpty()){
             fromString.append(" inner join product_attributes a on p.id = a.product_id");
         }
         selectString.append(fromString);
@@ -123,7 +123,7 @@ public class SearchService {
             case "year" -> " and year <> -1 and year <> -2";
             case "version" -> " and version <> 'not needed' and version <> 'unknown'";
             case "size" -> " and size <> 'unknown'";
-            case "name" -> "";
+            case "name", "condition" -> "";
             default -> throw new RuntimeException("impossible to avoid forbidden values for column " + column);
         };
     }
