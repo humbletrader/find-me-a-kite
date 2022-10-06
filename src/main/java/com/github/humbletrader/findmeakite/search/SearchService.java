@@ -17,7 +17,7 @@ public class SearchService {
 
     public final static int ROWS_DISPLAYED_PER_PAGE = 20;
 
-    private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = new HashSet<>(Arrays.asList("price", "size", "color"));
+    private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = Set.of("price", "size", "color");
 
     @Autowired
     private SearchRepository searchRepository;
@@ -73,7 +73,7 @@ public class SearchService {
     ParameterizedStatement buildSearchSql(Map<String, String> criteria, int page) {
         //"brand_name_version", "link", "price", "size"
         StringBuilder select = new StringBuilder("select");
-        select.append(" p.brand_name_version, p.link, a.price, a.size");
+        select.append(" p.brand_name_version, p.link, a.price, a.size, p.condition");
         select.append(" from products p");
         select.append(" inner join shops s on s.id = p.shop_id");
         select.append(" inner join product_attributes a on p.id = a.product_id");

@@ -6,12 +6,14 @@ public class SearchItem {
     private final String brandNameVersion;
     private double price;
     private final String size;
+    private final String condition;
 
-    public SearchItem(String brandNameVersion, String link, double price, String size) {
+    public SearchItem(String brandNameVersion, String link, double price, String size, String condition) {
         this.brandNameVersion = brandNameVersion;
         this.link = link;
         this.price = price;
         this.size = size;
+        this.condition = condition;
     }
 
     public String getLink() {
@@ -28,5 +30,9 @@ public class SearchItem {
 
     public String getSize() {
         return size;
+    }
+
+    public String getCondition() {
+        return condition;
     }
 }

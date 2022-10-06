@@ -165,6 +165,7 @@ function find(pageToFind){
 
             $("<td>").text(item.size).appendTo(resultLineTr)
             $("<td>").text(item.price.toFixed(2)).appendTo(resultLineTr)
+            $("<td>").text(item.condition).appendTo(resultLineTr)
 
             $("#searchResults").append(resultLineTr);
         });
