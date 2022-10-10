@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.github.humbletrader</groupId>
 	<artifactId>findmeakite</artifactId>
-	<version>1.3.0</version>
+	<version>1.3.1</version>
 	<name>find-me-a-kite</name>
 	<description>Scanner for cheap kitesurfing gear</description>
 
