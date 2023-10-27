@@ -8,7 +8,14 @@ public class SearchItem {
     private final String size;
     private final String condition;
 
-    public SearchItem(String brandNameVersion, String link, double price, String size, String condition) {
+    private boolean isVisibleToPublic;
+
+    public SearchItem(String brandNameVersion,
+                      String link,
+                      double price,
+                      String size,
+                      String condition,
+                      boolean isVisibleToPublic) {
         this.brandNameVersion = brandNameVersion;
         this.link = link;
         this.price = price;
@@ -34,5 +41,9 @@ public class SearchItem {
 
     public String getCondition() {
         return condition;
+    }
+
+    public boolean isVisibleToPublic(){
+        return isVisibleToPublic;
     }
 }

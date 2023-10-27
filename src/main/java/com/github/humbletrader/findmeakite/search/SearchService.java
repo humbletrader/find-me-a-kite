@@ -41,11 +41,33 @@ public class SearchService {
         boolean hasNextPage = result.size() > ROWS_DISPLAYED_PER_PAGE;
         logger.info("search returned {} items this means next page is available {}", result.size(), hasNextPage);
 
-        return new SearchResultPage(
-                criteria.getPage(),
-                result.subList(0, min(ROWS_DISPLAYED_PER_PAGE, result.size())),
-                hasNextPage
-        );
+        //obfuscate the items for non supporters
+        List<SearchItem> obfuscatedResult = obfuscateResultsAndLimitSize(result);
+        return new SearchResultPage(criteria.getPage(), obfuscatedResult, hasNextPage);
+    }
+
+    /**
+     * 1. checks the visibility of each output item and transforms the result for non supporters
+     * 2. limits the size of the output to the maximum accepted per page
+     * @param queryResults
+     * @return
+     */
+    private List<SearchItem> obfuscateResultsAndLimitSize(List<SearchItem> queryResults){
+        return queryResults.stream()
+                .map(searchItem -> {
+                        if(!searchItem.isVisibleToPublic()){
+                            return new SearchItem(
+                                    "item visible to supporters only",
+                                    "",
+                                    searchItem.getPrice(),
+                                    searchItem.getSize(),
+                                    searchItem.getCondition(),
+                                    searchItem.isVisibleToPublic()
+                            );
+                        } else return searchItem;
+                })
+                .limit(ROWS_DISPLAYED_PER_PAGE)
+                .toList();
     }
 
     ParameterizedStatement buildDistinctValuesSql(Map<String, String> criteria, String column){
@@ -73,7 +95,7 @@ public class SearchService {
     ParameterizedStatement buildSearchSql(Map<String, String> criteria, int page) {
         //"brand_name_version", "link", "price", "size"
         StringBuilder select = new StringBuilder("select");
-        select.append(" p.brand_name_version, p.link, a.price, a.size, p.condition");
+        select.append(" p.brand_name_version, p.link, a.price, a.size, p.condition, p.visible_to_public");
         select.append(" from products p");
         select.append(" inner join shops s on s.id = p.shop_id");
         select.append(" inner join product_attributes a on p.id = a.product_id");

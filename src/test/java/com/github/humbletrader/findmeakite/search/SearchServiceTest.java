@@ -83,7 +83,7 @@ public class SearchServiceTest {
         filters.put("country", "UK");
 
         ParameterizedStatement result = underTest.buildSearchSql(filters, 2);
-        assertEquals("select p.brand_name_version, p.link, a.price, a.size "+
+        assertEquals("select p.brand_name_version, p.link, a.price, a.size, p.condition, p.visible_to_public "+
                         "from products p " +
                         "inner join shops s on s.id = p.shop_id "+
                         "inner join product_attributes a on p.id = a.product_id " +

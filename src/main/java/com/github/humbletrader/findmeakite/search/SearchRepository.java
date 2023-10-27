@@ -30,14 +30,14 @@ public class SearchRepository {
         logger.info("searching for products with : {} ", searchStatement);
         return jdbcTemplate.query(
                 searchStatement.getSqlWithoutParameters(),
-                //"brand_name_version", "link", "price", "size", "condition"
+                //"brand_name_version", "link", "price", "size", "condition", "visible_to_public"
                 (rs, rowCount) -> new SearchItem(
                         rs.getString(1),
                         rs.getString(2),
                         rs.getDouble(3),
                         rs.getString(4),
-                        rs.getString(5)
-                ),
+                        rs.getString(5),
+                        rs.getBoolean(6)),
                 searchStatement.getParamValues().toArray()
         );
     }
