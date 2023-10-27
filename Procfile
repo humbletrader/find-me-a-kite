@@ -1,1 +1,1 @@
-web: java -jar target/findmeakite-1.3.2.jar
+web: java -jar target/findmeakite-1.4.0.jar
