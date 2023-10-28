@@ -8,7 +8,7 @@ public class SearchItem {
     private final String size;
     private final String condition;
 
-    private boolean isVisibleToPublic;
+    private boolean visibleToPublic;
 
     public SearchItem(String brandNameVersion,
                       String link,
@@ -21,6 +21,7 @@ public class SearchItem {
         this.price = price;
         this.size = size;
         this.condition = condition;
+        this.visibleToPublic = isVisibleToPublic;
     }
 
     public String getLink() {
@@ -44,6 +45,6 @@ public class SearchItem {
     }
 
     public boolean isVisibleToPublic(){
-        return isVisibleToPublic;
+        return visibleToPublic;
     }
 }
