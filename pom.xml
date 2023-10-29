@@ -12,16 +12,14 @@
 
 	<groupId>com.github.humbletrader</groupId>
 	<artifactId>findmeakite</artifactId>
-	<version>1.4.2</version>
+	<version>1.4.3</version>
 	<name>find-me-a-kite</name>
 	<description>Scanner for cheap kitesurfing gear</description>
-
 
 	<properties>
 		<java.version>17</java.version>
 		<springfox-swagger.version>2.10.5</springfox-swagger.version>
 	</properties>
-
 
 	<dependencies>
 
