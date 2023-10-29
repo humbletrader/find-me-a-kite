@@ -23,7 +23,7 @@ public class SearchService {
     private Set<String> supporterTokens;
 
 
-    public SearchService(@Value("fmak.supporter.tokens")String supporterTokensAsString){
+    public SearchService(@Value("${fmak.supporter.tokens}")String supporterTokensAsString){
         logger.info("accepted supporter tokens {}", supporterTokensAsString);
         this.supporterTokens = Set.of(supporterTokensAsString.split(","));
     }
@@ -64,7 +64,10 @@ public class SearchService {
     private List<SearchItem> obfuscateAndLimitResults(List<SearchItem> queryResults, String token){
         return queryResults.stream()
                 .map(searchItem -> {
-                        if(!searchItem.isVisibleToPublic() && supporterTokens.contains(token)){
+                        if(!searchItem.isVisibleToPublic() &&
+                                token != null &&
+                                !supporterTokens.isEmpty() &&
+                                supporterTokens.contains(token)){
                             return new SearchItem(
                                     "item visible to supporters only",
                                     "",
