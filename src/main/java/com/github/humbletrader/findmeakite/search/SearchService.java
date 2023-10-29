@@ -23,7 +23,7 @@ public class SearchService {
     private Set<String> supporterTokens;
 
 
-    public SearchService(@Value("${fmak.suppporter.tokens}")String supporterTokensAsString){
+    public SearchService(@Value("fmak.suppporter.tokens")String supporterTokensAsString){
         logger.info("accepted supporter tokens {}", supporterTokensAsString);
         this.supporterTokens = Set.of(supporterTokensAsString.split(","));
     }
