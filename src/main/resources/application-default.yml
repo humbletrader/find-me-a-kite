@@ -29,4 +29,4 @@ management:
 # application specific properties
 fmak:
   supporter:
-    tokens: test1,test2,test3
+    tokens: ${SUPPORTER_TOKENS}
