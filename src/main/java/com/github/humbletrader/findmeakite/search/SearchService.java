@@ -64,19 +64,19 @@ public class SearchService {
     private List<SearchItem> obfuscateAndLimitResults(List<SearchItem> queryResults, String token){
         return queryResults.stream()
                 .map(searchItem -> {
-                        if(!searchItem.isVisibleToPublic() &&
-                                token != null &&
-                                !supporterTokens.isEmpty() &&
-                                supporterTokens.contains(token)){
-                            return new SearchItem(
-                                    "item visible to supporters only",
-                                    "",
-                                    searchItem.getPrice(),
-                                    searchItem.getSize(),
-                                    searchItem.getCondition(),
-                                    searchItem.isVisibleToPublic()
-                            );
-                        } else return searchItem;
+                    boolean hiddenItem = !searchItem.isVisibleToPublic();
+                    boolean userIsASupporter = token != null && !supporterTokens.isEmpty() && supporterTokens.contains(token);
+
+                    if(hiddenItem && !userIsASupporter){
+                        return new SearchItem(
+                                "item visible to supporters only",
+                                "",
+                                searchItem.getPrice(),
+                                searchItem.getSize(),
+                                searchItem.getCondition(),
+                                searchItem.isVisibleToPublic()
+                        );
+                    } else return searchItem;
                 })
                 .limit(ROWS_DISPLAYED_PER_PAGE)
                 .toList();
