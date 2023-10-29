@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,6 +19,14 @@ public class SearchService {
     public final static int ROWS_DISPLAYED_PER_PAGE = 20;
 
     private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = Set.of("price", "size", "color");
+
+    private Set<String> supporterTokens;
+
+
+    public SearchService(@Value("fmak.suppporter.tokens")String supporterTokensAsString){
+        logger.info("accepted supporter tokens {}", supporterTokensAsString);
+        this.supporterTokens = Set.of(supporterTokensAsString.split(","));
+    }
 
     @Autowired
     private SearchRepository searchRepository;
@@ -42,7 +51,7 @@ public class SearchService {
         logger.info("search returned {} items this means next page is available {}", result.size(), hasNextPage);
 
         //obfuscate the items for non supporters
-        List<SearchItem> obfuscatedResult = obfuscateResultsAndLimitSize(result);
+        List<SearchItem> obfuscatedResult = obfuscateAndLimitResults(result, criteria.getSupporterToken());
         return new SearchResultPage(criteria.getPage(), obfuscatedResult, hasNextPage);
     }
 
@@ -52,10 +61,10 @@ public class SearchService {
      * @param queryResults
      * @return
      */
-    private List<SearchItem> obfuscateResultsAndLimitSize(List<SearchItem> queryResults){
+    private List<SearchItem> obfuscateAndLimitResults(List<SearchItem> queryResults, String token){
         return queryResults.stream()
                 .map(searchItem -> {
-                        if(!searchItem.isVisibleToPublic()){
+                        if(!searchItem.isVisibleToPublic() && supporterTokens.contains(token)){
                             return new SearchItem(
                                     "item visible to supporters only",
                                     "",

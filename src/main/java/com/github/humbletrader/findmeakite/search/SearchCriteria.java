@@ -7,9 +7,12 @@ public class SearchCriteria {
     private int page;
     private Map<String, String> criteria;
 
-    public SearchCriteria(int page, Map<String, String> criteria) {
+    private String supporterToken;
+
+    public SearchCriteria(int page, Map<String, String> criteria, String token) {
         this.page = page;
         this.criteria = criteria;
+        this.supporterToken = token;
     }
 
     public int getPage() {
@@ -20,11 +23,16 @@ public class SearchCriteria {
         return criteria;
     }
 
+    public String getSupporterToken(){
+        return supporterToken;
+    }
+
     @Override
     public String toString() {
         return "SearchCriteria{" +
                 "page=" + page +
                 ", criteria=" + criteria +
+                ", supporter= "+supporterToken +
                 '}';
     }
 }

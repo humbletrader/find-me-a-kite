@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SearchServiceTest {
 
-    private SearchService underTest = new SearchService();
+    private SearchService underTest = new SearchService("token1,token2");
 
     @Test
     public void sqlBuildForTwoParametersNonProductAttributes(){

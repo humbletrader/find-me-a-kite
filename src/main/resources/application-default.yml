@@ -25,3 +25,8 @@ management:
   endpoint:
     health:
       show-details: always
+
+# application specific properties
+fmak:
+  supporter:
+    tokens: ${SUPPORTER_TOKENS}
