@@ -94,7 +94,7 @@ function collectCriteriaValues(divCount){
 }
 
 function collectSupporterToken(){
-    const urlParams = new UrlSearchParams(window.location.search)
+    const urlParams = new URLSearchParams(window.location.search)
     if(urlParams.has("supporter")){
         return urlParams.get("supporter")
     } else {
