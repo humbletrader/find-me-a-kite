@@ -93,6 +93,16 @@ function collectCriteriaValues(divCount){
     return criteria;
 }
 
+function collectSupporterToken(){
+    const urlParams = new UrlSearchParams(window.location.search)
+    if(urlParams.has("supporter")){
+        return urlParams.get("supporter")
+    } else {
+        return "none"
+    }
+}
+
+
 function populateValues(divCount){
 
     //delete previous options in select
@@ -144,6 +154,7 @@ function find(pageToFind){
 
    var postData = {
     "page" : pageToFind,
+    "supporterToken" : collectSupporterToken(),
     "criteria" : collectCriteriaValues(criteriaCount)
    }
    console.log("sending to server..."+JSON.stringify(postData));
