@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class DistinctValuesSearchCriteria {
 
-    private String target;
-    private Map<String, String> criteriaNamesAndValues;
+    private final String target;
+    private final Map<String, String> criteriaNamesAndValues;
 
     public DistinctValuesSearchCriteria(String target, Map<String, String> criteria) {
         this.target = target;

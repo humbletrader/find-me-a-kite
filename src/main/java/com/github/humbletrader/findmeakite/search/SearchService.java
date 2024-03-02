@@ -82,6 +82,12 @@ public class SearchService {
                 .toList();
     }
 
+    /**
+     * builds the sql for 'distinct values call"
+     * @param criteria the criteria for the search
+     * @param column    the column for which we check the distinct values
+     * @return  the sql statement to be executed in order to get the distinct values from db
+     */
     ParameterizedStatement buildDistinctValuesSql(Map<String, String> criteria, String column){
 
         StringBuilder selectString = new StringBuilder("select distinct");
@@ -104,6 +110,12 @@ public class SearchService {
         return new ParameterizedStatement(selectString.toString(), whereParameterizedStatement.getParamValues());
     }
 
+    /**
+     * builds the sql statement to retrieve the db items for the given criteria
+     * @param criteria  the criteria (ie. brand=DUOTONE, etc)
+     * @param page  the new page requested
+     * @return  the sql to be executed against the db
+     */
     ParameterizedStatement buildSearchSql(Map<String, String> criteria, int page) {
         //"brand_name_version", "link", "price", "size"
         StringBuilder select = new StringBuilder("select");
@@ -124,16 +136,23 @@ public class SearchService {
         return new ParameterizedStatement(select.toString(), valuesForParameters);
     }
 
+    /**
+     * builds the where clause of the sql for the given criteria
+     * @param criteria  the criteria
+     * @return  a part of sql with the "where" clause
+     */
     ParameterizedStatement whereFromCriteria(Map<String, String> criteria){
         StringBuilder whereString = new StringBuilder(" where");
         List<Object> valuesForParameters = new ArrayList<>();
 
+        //first we build sql for the mandatory params ( category, country )
         whereString.append(" p.category = ?");
         valuesForParameters.add(criteria.get("category"));
 
         whereString.append(" and s.country = ?");
         valuesForParameters.add(criteria.get("country"));
 
+        //then we check the rest
         for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
             String currentKey = currentCriteria.getKey();
             if(!currentKey.equals("category") && !currentKey.equals("country")){
@@ -150,6 +169,7 @@ public class SearchService {
         return new ParameterizedStatement(whereString.toString(), valuesForParameters);
     }
 
+    @Deprecated //todo: as the parser gets better we don't need this method anymore
     String avoidForbiddenValues(String column){
         return
         switch(column){
@@ -157,7 +177,7 @@ public class SearchService {
             case "year" -> " and year <> -1 and year <> -2";
             case "version" -> " and version <> 'not needed' and version <> 'unknown'";
             case "size" -> " and size <> 'unknown'";
-            case "name", "condition" -> "";
+            case "product_name", "condition", "subprod_name" -> "";
             default -> throw new RuntimeException("impossible to avoid forbidden values for column " + column);
         };
     }

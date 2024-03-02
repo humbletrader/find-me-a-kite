@@ -4,18 +4,13 @@ import java.util.List;
 
 public class ParameterizedStatement {
 
-    private String sqlWithoutParameters;
-    private List<Object> paramValues;
+    private final String sqlWithoutParameters;
+    private final List<Object> paramValues;
 
 
     public ParameterizedStatement(String sqlWithoutParameters, List<Object> values){
         this.sqlWithoutParameters = sqlWithoutParameters;
         this.paramValues = values;
-    }
-
-    public ParameterizedStatement(ParameterizedStatement initial){
-        this.sqlWithoutParameters = initial.sqlWithoutParameters;
-        this.paramValues = initial.paramValues;
     }
 
     public String getSqlWithoutParameters() {

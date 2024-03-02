@@ -1,7 +1,7 @@
 
 var chooseItemText = "Choose..."
 var currentResultsPage = 0;
-var criteria = ["brand", "name", "version", "year", "size", "condition"];
+var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
@@ -102,14 +102,18 @@ function collectSupporterToken(){
     }
 }
 
-
+// 1. get the current search criteria
+// 2. call server for distinct values for selected colum
+// 3. display distinct values
 function populateValues(divCount){
-
     //delete previous options in select
     $("#"+criteriaValueIdPrefix+divCount).empty();
     $("<option>").val("none").text(chooseItemText).appendTo("#"+criteriaValueIdPrefix+divCount);
 
     var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
+
+    //if there's no criteria selected we skip the network call
+    if(currentCriteria == "none") return;
     var result = { "target" : currentCriteria}
     result["criteria"] = collectCriteriaValues(divCount);
 
@@ -141,6 +145,9 @@ function populateValues(divCount){
          });
 }
 
+//1. collect search criteria
+//2. call to server for the given criteria
+//3. display items in table
 function find(pageToFind){
 
     if(!previousFormsHaveCorrectStatus()){
