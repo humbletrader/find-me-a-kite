@@ -12,7 +12,7 @@
 
 	<groupId>com.github.humbletrader</groupId>
 	<artifactId>findmeakite</artifactId>
-	<version>1.5.1</version>
+	<version>1.6.0</version>
 	<name>find-me-a-kite</name>
 	<description>Scanner for cheap kitesurfing gear</description>
 
