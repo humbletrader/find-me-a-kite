@@ -6,6 +6,7 @@ var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
 var criteriaNameIdPrefix = "criteriaValue";
+var criteriaOperatorIdPrefix = "criteriaOperator";
 
 function disableFilterInputsForLevel(level){
     console.log("disabling input #"+criteriaNameIdPrefix+level)
@@ -31,7 +32,7 @@ function displayNewCriteriaRow(){
         return;
     }
 
-    //disable previous criteria
+    //disable previous criteria so that they don't change
     if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount - 1)
 
     //div
@@ -44,7 +45,7 @@ function displayNewCriteriaRow(){
 
     var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
 
-    //select
+    //select with criteria (brand, product, size)
     var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .attr("class", "form-control")
@@ -55,13 +56,19 @@ function displayNewCriteriaRow(){
             $("<option>").val(item).text(item).appendTo(selectHtmlForCriteria);
     });
 
+    //select with operator
+    var selectHtmlForOperator = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
+                                            .attr("class", "form-control")
+                                            .attr("disabled", "disabled")
+                                            .appendTo(firstColumn);
+    $("<option>").val("=").text("=").appendTo(newSearchCriteriaRow);
+
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
             .attr("class", "form-control")
             .attr("disabled", "disabled")
             .appendTo(newSearchCriteriaRow);
     $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForValues);
-
 
     var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
     //delete button
@@ -85,11 +92,13 @@ function collectCriteriaValues(divCount){
         "category" : $("#category").val(),
         "country" : $("#country").val()
     }
+
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
         criteria[selectedCriteria] = selectedCriteriaValue;
     }
+
     return criteria;
 }
 
