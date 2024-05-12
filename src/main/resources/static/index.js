@@ -1,6 +1,5 @@
 
 var chooseItemText = "Choose..."
-var currentResultsPage = 0;
 var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
@@ -17,7 +16,7 @@ function previousFormsHaveCorrectStatus(){
     if(criteriaCount > 0){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + (criteriaCount-1)).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + (criteriaCount-1)).val();
-        //console.log("selected criteria: "+selectedCriteria +" and value: "+selectedCriteriaValue);
+        console.log("selected criteria: "+selectedCriteria +" and value: "+selectedCriteriaValue);
         return selectedCriteria != "none" && selectedCriteriaValue != "none";
     }else{
         return true;
@@ -45,7 +44,7 @@ function displayNewCriteriaRow(){
     var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
 
     //select
-    var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
+    var selectHtmlForCriteria = $("<select onchange='populateDistinctValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .attr("class", "form-control")
         .appendTo(firstColumn);
@@ -76,20 +75,26 @@ function displayNewCriteriaRow(){
 
 function deleteCriteriaBelow(divCount){
     for(i=divCount; i < criteriaCount; i++){
+        //console.log("removing row "+i+" from criteria")
         $("#"+criteriaDivIdPrefix+i).remove();
     }
+    //console.log("removing "+(criteriaCount - divCount)+" from criteria count")
+    criteriaCount = criteriaCount - (criteriaCount - divCount);
+    //console.log("criteriaCount "+criteriaCount)
 }
 
 function collectCriteriaValues(divCount){
     var criteria = {
-        "category" : $("#category").val(),
-        "country" : $("#country").val()
+        "category" : {"value" : $("#category").val(), "op": "eq"},
+        "country" : {"value": $("#country").val(), "op": "eq"}
     }
+
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
-        criteria[selectedCriteria] = selectedCriteriaValue;
+        criteria[selectedCriteria] = {"value": selectedCriteriaValue, "op": "eq"};
     }
+
     return criteria;
 }
 
@@ -105,7 +110,7 @@ function collectSupporterToken(){
 // 1. get the current search criteria
 // 2. call server for distinct values for selected colum
 // 3. display distinct values
-function populateValues(divCount){
+function populateDistinctValues(divCount){
     //delete previous options in select
     $("#"+criteriaValueIdPrefix+divCount).empty();
     $("<option>").val("none").text(chooseItemText).appendTo("#"+criteriaValueIdPrefix+divCount);

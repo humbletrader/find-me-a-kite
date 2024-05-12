@@ -1,6 +1,6 @@
 package com.github.humbletrader.findmeakite.search;
 
-public class SearchItem {
+public class SearchResultItem {
 
     private final String link;
     private final String brandNameVersion;
@@ -10,12 +10,12 @@ public class SearchItem {
 
     private boolean visibleToPublic;
 
-    public SearchItem(String brandNameVersion,
-                      String link,
-                      double price,
-                      String size,
-                      String condition,
-                      boolean isVisibleToPublic) {
+    public SearchResultItem(String brandNameVersion,
+                            String link,
+                            double price,
+                            String size,
+                            String condition,
+                            boolean isVisibleToPublic) {
         this.brandNameVersion = brandNameVersion;
         this.link = link;
         this.price = price;

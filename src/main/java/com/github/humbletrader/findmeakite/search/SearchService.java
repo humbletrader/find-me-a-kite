@@ -24,7 +24,7 @@ public class SearchService {
 
 
     public SearchService(@Value("${fmak.supporter.tokens}")String supporterTokensAsString){
-        logger.info("accepted supporter tokens {}", supporterTokensAsString);
+        logger.debug("accepted supporter tokens {}", supporterTokensAsString);
         this.supporterTokens = Set.of(supporterTokensAsString.split(","));
     }
 
@@ -45,13 +45,13 @@ public class SearchService {
         logger.info("searching products by criteria {} ", criteria);
 
         ParameterizedStatement sql = buildSearchSql(criteria.getCriteria(), criteria.getPage());
-        List<SearchItem> result = searchRepository.pagedSearchByCriteria(sql);
+        List<SearchResultItem> result = searchRepository.pagedSearchByCriteria(sql);
 
         boolean hasNextPage = result.size() > ROWS_DISPLAYED_PER_PAGE;
         logger.info("search returned {} items this means next page is available {}", result.size(), hasNextPage);
 
         //obfuscate the items for non supporters
-        List<SearchItem> obfuscatedResult = obfuscateAndLimitResults(result, criteria.getSupporterToken());
+        List<SearchResultItem> obfuscatedResult = obfuscateAndLimitResults(result, criteria.getSupporterToken());
         return new SearchResultPage(criteria.getPage(), obfuscatedResult, hasNextPage);
     }
 
@@ -61,22 +61,22 @@ public class SearchService {
      * @param queryResults
      * @return
      */
-    private List<SearchItem> obfuscateAndLimitResults(List<SearchItem> queryResults, String token){
+    private List<SearchResultItem> obfuscateAndLimitResults(List<SearchResultItem> queryResults, String token){
         return queryResults.stream()
-                .map(searchItem -> {
-                    boolean hiddenItem = !searchItem.isVisibleToPublic();
+                .map(searchResultItem -> {
+                    boolean hiddenItem = !searchResultItem.isVisibleToPublic();
                     boolean userIsASupporter = token != null && !supporterTokens.isEmpty() && supporterTokens.contains(token);
 
                     if(hiddenItem && !userIsASupporter){
-                        return new SearchItem(
+                        return new SearchResultItem(
                                 "item visible to supporters only",
                                 "",
-                                searchItem.getPrice(),
-                                searchItem.getSize(),
-                                searchItem.getCondition(),
-                                searchItem.isVisibleToPublic()
+                                searchResultItem.getPrice(),
+                                searchResultItem.getSize(),
+                                searchResultItem.getCondition(),
+                                searchResultItem.isVisibleToPublic()
                         );
-                    } else return searchItem;
+                    } else return searchResultItem;
                 })
                 .limit(ROWS_DISPLAYED_PER_PAGE)
                 .toList();
@@ -88,7 +88,7 @@ public class SearchService {
      * @param column    the column for which we check the distinct values
      * @return  the sql statement to be executed in order to get the distinct values from db
      */
-    ParameterizedStatement buildDistinctValuesSql(Map<String, String> criteria, String column){
+    ParameterizedStatement buildDistinctValuesSql(Map<String, SearchValAndOp> criteria, String column){
 
         StringBuilder selectString = new StringBuilder("select distinct");
 
@@ -116,7 +116,7 @@ public class SearchService {
      * @param page  the new page requested
      * @return  the sql to be executed against the db
      */
-    ParameterizedStatement buildSearchSql(Map<String, String> criteria, int page) {
+    ParameterizedStatement buildSearchSql(Map<String, SearchValAndOp> criteria, int page) {
         //"brand_name_version", "link", "price", "size"
         StringBuilder select = new StringBuilder("select");
         select.append(" p.brand_name_version, p.link, a.price, a.size, p.condition, p.visible_to_public");
@@ -136,32 +136,40 @@ public class SearchService {
         return new ParameterizedStatement(select.toString(), valuesForParameters);
     }
 
+    private String buildSqlOperatorFor(SearchValAndOp searchValAndOp){
+        if(searchValAndOp.op().equals("eq")) return "=";
+        else throw new IllegalArgumentException("unsupported operator");
+    }
+
     /**
      * builds the where clause of the sql for the given criteria
      * @param criteria  the criteria
      * @return  a part of sql with the "where" clause
      */
-    ParameterizedStatement whereFromCriteria(Map<String, String> criteria){
+    ParameterizedStatement whereFromCriteria(Map<String, SearchValAndOp> criteria){
         StringBuilder whereString = new StringBuilder(" where");
         List<Object> valuesForParameters = new ArrayList<>();
 
         //first we build sql for the mandatory params ( category, country )
-        whereString.append(" p.category = ?");
-        valuesForParameters.add(criteria.get("category"));
+        SearchValAndOp categoryValueAndOp = criteria.get("category");
+        whereString.append(" p.category").append(buildSqlOperatorFor(categoryValueAndOp)).append("?");
+        valuesForParameters.add(categoryValueAndOp.value());
 
-        whereString.append(" and s.country = ?");
-        valuesForParameters.add(criteria.get("country"));
+        SearchValAndOp countryValueAndOp = criteria.get("country");
+        whereString.append(" and s.country").append(buildSqlOperatorFor(countryValueAndOp)).append("?");
+        valuesForParameters.add(countryValueAndOp.value());
 
         //then we check the rest
-        for (Map.Entry<String, String> currentCriteria : criteria.entrySet()) {
+        for (Map.Entry<String, SearchValAndOp> currentCriteria : criteria.entrySet()) {
             String currentKey = currentCriteria.getKey();
+            SearchValAndOp currentValAndOp = currentCriteria.getValue();
             if(!currentKey.equals("category") && !currentKey.equals("country")){
-                whereString.append(" and").append(prefixedColumn(currentCriteria.getKey())).append(" = ?");
-                if(currentCriteria.getKey().equals("year")){
-                    //year is an integer in DB (temporary)
-                    valuesForParameters.add(Integer.valueOf(currentCriteria.getValue()));
+                whereString.append(" and").append(prefixedColumn(currentKey)).append(buildSqlOperatorFor(currentValAndOp)).append("?");
+                if(currentKey.equals("year")){
+                    //year is an integer in DB it needs special tretment
+                    valuesForParameters.add(Integer.valueOf(currentValAndOp.value()));
                 }else{
-                    valuesForParameters.add(currentCriteria.getValue().toLowerCase());
+                    valuesForParameters.add(currentValAndOp.value());
                 }
             }
         }

@@ -13,20 +13,20 @@ public class SearchServiceTest {
 
     @Test
     public void sqlBuildForTwoParametersNonProductAttributes(){
-        Map<String, String> filters = new HashMap<>();
-        filters.put("category", "KITES");
-        filters.put("country", "EU");
-        filters.put("name", "cabrinha");
+        Map<String, SearchValAndOp> filters = new HashMap<>();
+        filters.put("category", new SearchValAndOp("KITES", "eq"));
+        filters.put("country", new SearchValAndOp("EU", "eq"));
+        filters.put("product_name", new SearchValAndOp("cabrinha", "eq"));
 
-        ParameterizedStatement result = underTest.buildDistinctValuesSql(filters,   "name");
+        ParameterizedStatement result = underTest.buildDistinctValuesSql(filters,   "product_name");
         assertEquals(
-                "select distinct p.name "+
+                "select distinct p.product_name "+
                         "from products p "+
                         "inner join shops s on s.id = p.shop_id "+
-                        "where p.category = ? "+
-                        "and s.country = ? "+
-                        "and p.name = ? "+
-                        "order by name",
+                        "where p.category=? "+
+                        "and s.country=? "+
+                        "and p.product_name=? "+
+                        "order by product_name",
                 result.getSqlWithoutParameters()
         );
         assertEquals(Arrays.asList("KITES", "EU", "cabrinha"), result.getParamValues());
@@ -34,23 +34,23 @@ public class SearchServiceTest {
 
     @Test
     public void sqlShouldContainAJoinWhenSizeIsInFilter(){
-        Map<String, String> filters = new HashMap<>();
-        filters.put("category", "KITES");
-        filters.put("country", "EU");
-        filters.put("name", "cabrinha");
-        filters.put("size", "10");
+        Map<String, SearchValAndOp> filters = new HashMap<>();
+        filters.put("category", new SearchValAndOp("KITES", "eq"));
+        filters.put("country", new SearchValAndOp("EU", "eq"));
+        filters.put("product_name", new SearchValAndOp("cabrinha", "eq"));
+        filters.put("size", new SearchValAndOp("10", "eq"));
 
-        ParameterizedStatement result = underTest.buildDistinctValuesSql(filters, "name");
+        ParameterizedStatement result = underTest.buildDistinctValuesSql(filters, "product_name");
         assertEquals(
-                "select distinct p.name " +
+                "select distinct p.product_name " +
                         "from products p "+
                         "inner join shops s on s.id = p.shop_id "+
                         "inner join product_attributes a on p.id = a.product_id " +
-                        "where p.category = ? "+
-                        "and s.country = ? " +
-                        "and a.size = ? "+
-                        "and p.name = ? "+
-                        "order by name",
+                        "where p.category=? "+
+                        "and s.country=? " +
+                        "and a.size=? "+
+                        "and p.product_name=? "+
+                        "order by product_name",
                 result.getSqlWithoutParameters()
         );
         assertEquals(List.of("KITES", "EU", "10", "cabrinha"), result.getParamValues());
@@ -58,17 +58,17 @@ public class SearchServiceTest {
 
     @Test
     public void distinctSize(){
-        Map<String, String> filters = new HashMap<>();
-        filters.put("category", "KITES");
-        filters.put("country", "US");
+        Map<String, SearchValAndOp> filters = new HashMap<>();
+        filters.put("category", new SearchValAndOp("KITES", "eq"));
+        filters.put("country", new SearchValAndOp("US", "eq"));
 
         ParameterizedStatement result = underTest.buildDistinctValuesSql(filters, "size");
         assertEquals(
                 "select distinct a.size from products p " +
                         "inner join shops s on s.id = p.shop_id " +
                         "inner join product_attributes a on p.id = a.product_id " +
-                        "where p.category = ? "+
-                        "and s.country = ? " +
+                        "where p.category=? "+
+                        "and s.country=? " +
                         "and size <> 'unknown' "+
                         "order by size",
                 result.getSqlWithoutParameters()
@@ -78,17 +78,17 @@ public class SearchServiceTest {
 
     @Test
     public void searchSql(){
-        Map<String, String> filters = new HashMap<>();
-        filters.put("category", "KITES");
-        filters.put("country", "UK");
+        Map<String, SearchValAndOp> filters = new HashMap<>();
+        filters.put("category", new SearchValAndOp("KITES", "eq"));
+        filters.put("country", new SearchValAndOp("UK", "eq"));
 
         ParameterizedStatement result = underTest.buildSearchSql(filters, 2);
         assertEquals("select p.brand_name_version, p.link, a.price, a.size, p.condition, p.visible_to_public "+
                         "from products p " +
                         "inner join shops s on s.id = p.shop_id "+
                         "inner join product_attributes a on p.id = a.product_id " +
-                        "where p.category = ? " +
-                        "and s.country = ? "+
+                        "where p.category=? " +
+                        "and s.country=? "+
                         "order by a.price limit ? offset ?",
                 result.getSqlWithoutParameters()
         );
