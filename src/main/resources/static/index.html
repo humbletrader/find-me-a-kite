@@ -18,6 +18,11 @@
     <script src="https://fastly.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
     <script src="./index.js"></script>
 
+    <!-- favico -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
 </head>
 <body>
 
@@ -70,7 +75,15 @@
 
                 <input type="button" onclick="find(0)" name="find" value="Find" class="btn btn-block btn-outline-dark mb-3"/>
 
-                <div id="displaySearchCriteria"></div>
+                <div id="filler">
+                    <hr/>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                </div>
+
+                <input type="button" onclick="saveNotification()" name="notify" value="Notify me of any changes in the results!" class="btn btn-block btn-outline-dark mb-3" disabled/>
             </div>
             <div class="col-sm-7">
 
@@ -105,7 +118,6 @@
 
                             <!-- Modal body -->
                             <div class="modal-body">
-                                <p> March 2022 - started scanning second hand gear </p>
                                 <p> April 2022 - shops from US added to our index</p>
                                 <p> Sept 2022 - heroku (webhost) is ending its free tier. Support needed !</p>
                                 <p> April 2023 - more US shops added </p>
@@ -113,6 +125,7 @@
                                 <p> Mar 2024 - Product and Sub-products supported <br/>
                                     (i.e. search product=evo, subproduct=sls or subproduct=dlab)
                                 </p>
+                                <p> May 2024 - Notification when new items appear (beta)</p>
                             </div>
 
                             <!-- Modal footer -->

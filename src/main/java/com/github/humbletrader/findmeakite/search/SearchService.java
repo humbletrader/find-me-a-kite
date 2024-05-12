@@ -1,15 +1,12 @@
 package com.github.humbletrader.findmeakite.search;
 
+import com.github.humbletrader.findmeakite.supporter.SupporterService;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
-import static java.lang.Math.min;
 
 @Service
 public class SearchService {
@@ -20,16 +17,15 @@ public class SearchService {
 
     private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = Set.of("price", "size", "color");
 
-    private Set<String> supporterTokens;
+    private SearchRepository searchRepository;
+    private SupporterService supporterService;
 
-
-    public SearchService(@Value("${fmak.supporter.tokens}")String supporterTokensAsString){
-        logger.debug("accepted supporter tokens {}", supporterTokensAsString);
-        this.supporterTokens = Set.of(supporterTokensAsString.split(","));
+    public SearchService(SupporterService supporterService, SearchRepository searchRepository){
+        this.supporterService = supporterService;
+        this.searchRepository = searchRepository;
     }
 
-    @Autowired
-    private SearchRepository searchRepository;
+
 
     public List<String> findCategories(){
         logger.info("servicing supported categories ...");
@@ -65,7 +61,7 @@ public class SearchService {
         return queryResults.stream()
                 .map(searchResultItem -> {
                     boolean hiddenItem = !searchResultItem.isVisibleToPublic();
-                    boolean userIsASupporter = token != null && !supporterTokens.isEmpty() && supporterTokens.contains(token);
+                    boolean userIsASupporter = supporterService.isSupporter(token);
 
                     if(hiddenItem && !userIsASupporter){
                         return new SearchResultItem(
