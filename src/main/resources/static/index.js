@@ -5,6 +5,7 @@ var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
 var criteriaNameIdPrefix = "criteriaValue";
+var NO_SUPPORTER = "none";
 
 function disableFilterInputsForLevel(level){
     console.log("disabling input #"+criteriaNameIdPrefix+level)
@@ -99,11 +100,11 @@ function collectCriteriaValues(divCount){
 }
 
 function collectSupporterToken(){
-    const urlParams = new URLSearchParams(window.location.search)
+    const urlParams = new URLSearchParams(window.location.search);
     if(urlParams.has("supporter")){
-        return urlParams.get("supporter")
+        return urlParams.get("supporter");
     } else {
-        return "none"
+        return NO_SUPPORTER;
     }
 }
 
@@ -159,8 +160,6 @@ function find(pageToFind){
         alert("please fill all forms before search !");
         return;
     }
-    //disable last criteria
-    //if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount-1)
 
     $("#searchResults").empty();
 
@@ -227,7 +226,41 @@ function find(pageToFind){
    });
 }
 
-window.onload = function(){
-    $("#newsModalDialog").modal()
+function saveNotification(){
+    var supporterToken = collectSupporterToken();
+
+    if(supporterToken === NO_SUPPORTER){
+        alert("Notifications are only for supporters !");
+        return;
+    }
+
+    var postData = {
+        "supporterToken" : collectSupporterToken(),
+        "criteria" : collectCriteriaValues(criteriaCount),
+        "email" : "test@gmail.com"
+       }
+       console.log("sending to server..."+JSON.stringify(postData));
+       var ajaxCallResult = $.ajax({
+            url: "/notification/save",
+            contentType : "application/json",
+            data: JSON.stringify(postData),
+            type: "POST",
+            dataType : "json",
+       })
+       .done(function(saveNotificationResult) {
+            console.log(saveNotificationResult);
+            alert(saveNotificationResult.status + ": "+ saveNotificationResult.reason);
+       })
+       .fail(function( xhr, status, errorThrown ) {
+            console.log( "Error: " + errorThrown );
+            console.log( "Status: " + status );
+            console.dir( xhr );
+            alert("Error: "+errorThrown);
+       });
+       return ajaxCallResult;
 }
+
+//window.onload = function(){
+//    $("#newsModalDialog").modal()
+//}
 
