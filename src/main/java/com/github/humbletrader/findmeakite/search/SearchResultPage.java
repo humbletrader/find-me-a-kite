@@ -6,9 +6,9 @@ public class SearchResultPage {
 
     private final int currentPage;
     private final boolean hasNext;
-    private final List<SearchItem> items;
+    private final List<SearchResultItem> items;
 
-    public SearchResultPage(int currentPage, List<SearchItem> items, boolean hasNext) {
+    public SearchResultPage(int currentPage, List<SearchResultItem> items, boolean hasNext) {
         this.currentPage = currentPage;
         this.hasNext = hasNext;
         this.items = items;
@@ -22,7 +22,7 @@ public class SearchResultPage {
         return hasNext;
     }
 
-    public List<SearchItem> getItems() {
+    public List<SearchResultItem> getItems() {
         return items;
     }
 }

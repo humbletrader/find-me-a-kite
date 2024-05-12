@@ -5,9 +5,9 @@ import java.util.Map;
 public class DistinctValuesSearchCriteria {
 
     private final String target;
-    private final Map<String, String> criteriaNamesAndValues;
+    private final Map<String, SearchValAndOp> criteriaNamesAndValues;
 
-    public DistinctValuesSearchCriteria(String target, Map<String, String> criteria) {
+    public DistinctValuesSearchCriteria(String target, Map<String, SearchValAndOp> criteria) {
         this.target = target;
         this.criteriaNamesAndValues = criteria;
     }
@@ -16,7 +16,7 @@ public class DistinctValuesSearchCriteria {
         return target;
     }
 
-    public Map<String, String> getCriteria(){
+    public Map<String, SearchValAndOp> getCriteria(){
         return criteriaNamesAndValues;
     }
 

@@ -1,12 +1,10 @@
 
 var chooseItemText = "Choose..."
-var currentResultsPage = 0;
 var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
 var criteriaNameIdPrefix = "criteriaValue";
-var criteriaOperatorIdPrefix = "criteriaOperator";
 
 function disableFilterInputsForLevel(level){
     console.log("disabling input #"+criteriaNameIdPrefix+level)
@@ -18,7 +16,7 @@ function previousFormsHaveCorrectStatus(){
     if(criteriaCount > 0){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + (criteriaCount-1)).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + (criteriaCount-1)).val();
-        //console.log("selected criteria: "+selectedCriteria +" and value: "+selectedCriteriaValue);
+        console.log("selected criteria: "+selectedCriteria +" and value: "+selectedCriteriaValue);
         return selectedCriteria != "none" && selectedCriteriaValue != "none";
     }else{
         return true;
@@ -32,7 +30,7 @@ function displayNewCriteriaRow(){
         return;
     }
 
-    //disable previous criteria so that they don't change
+    //disable previous criteria
     if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount - 1)
 
     //div
@@ -45,8 +43,8 @@ function displayNewCriteriaRow(){
 
     var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
 
-    //select with criteria (brand, product, size)
-    var selectHtmlForCriteria = $("<select onchange='populateValues(\""+criteriaCount+"\")'>")
+    //select
+    var selectHtmlForCriteria = $("<select onchange='populateDistinctValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .attr("class", "form-control")
         .appendTo(firstColumn);
@@ -56,19 +54,13 @@ function displayNewCriteriaRow(){
             $("<option>").val(item).text(item).appendTo(selectHtmlForCriteria);
     });
 
-    //select with operator
-    var selectHtmlForOperator = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
-                                            .attr("class", "form-control")
-                                            .attr("disabled", "disabled")
-                                            .appendTo(firstColumn);
-    $("<option>").val("=").text("=").appendTo(newSearchCriteriaRow);
-
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
             .attr("class", "form-control")
             .attr("disabled", "disabled")
             .appendTo(newSearchCriteriaRow);
     $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForValues);
+
 
     var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
     //delete button
@@ -83,20 +75,24 @@ function displayNewCriteriaRow(){
 
 function deleteCriteriaBelow(divCount){
     for(i=divCount; i < criteriaCount; i++){
+        console.log("removing row "+i+" from criteria")
         $("#"+criteriaDivIdPrefix+i).remove();
     }
+    console.log("removing "+(criteriaCount - divCount)+" from criteria count")
+    criteriaCount = criteriaCount - (criteriaCount - divCount);
+    console.log("criteriaCount "+criteriaCount)
 }
 
 function collectCriteriaValues(divCount){
     var criteria = {
-        "category" : $("#category").val(),
-        "country" : $("#country").val()
+        "category" : {"value" : $("#category").val(), "op": "eq"},
+        "country" : {"value": $("#country").val(), "op": "eq"}
     }
 
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
-        criteria[selectedCriteria] = selectedCriteriaValue;
+        criteria[selectedCriteria] = {"value": selectedCriteriaValue, "op": "eq"};
     }
 
     return criteria;
@@ -114,7 +110,7 @@ function collectSupporterToken(){
 // 1. get the current search criteria
 // 2. call server for distinct values for selected colum
 // 3. display distinct values
-function populateValues(divCount){
+function populateDistinctValues(divCount){
     //delete previous options in select
     $("#"+criteriaValueIdPrefix+divCount).empty();
     $("<option>").val("none").text(chooseItemText).appendTo("#"+criteriaValueIdPrefix+divCount);
@@ -231,7 +227,7 @@ function find(pageToFind){
    });
 }
 
-window.onload = function(){
-    $("#newsModalDialog").modal()
-}
+//window.onload = function(){
+//    $("#newsModalDialog").modal()
+//}
 

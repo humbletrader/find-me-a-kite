@@ -5,10 +5,12 @@ import java.util.Map;
 public class SearchCriteria {
 
     private int page;
-    private Map<String, String> criteria;
+    private Map<String, SearchValAndOp> criteria;
     private String supporterToken;
 
-    public SearchCriteria(int page, Map<String, String> criteria, String token) {
+    public SearchCriteria(int page,
+                          Map<String, SearchValAndOp> criteria,
+                          String token) {
         this.page = page;
         this.criteria = criteria;
         this.supporterToken = token;
@@ -18,7 +20,7 @@ public class SearchCriteria {
         return page;
     }
 
-    public Map<String, String> getCriteria() {
+    public Map<String, SearchValAndOp> getCriteria() {
         return criteria;
     }
 
