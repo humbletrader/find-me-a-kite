@@ -1,6 +1,7 @@
 package com.github.humbletrader.findmeakite.notification;
 
-import com.github.humbletrader.findmeakite.search.SearchValAndOp;
+
+import com.github.humbletrader.fmak.query.SearchValAndOp;
 
 import java.util.Map;
 

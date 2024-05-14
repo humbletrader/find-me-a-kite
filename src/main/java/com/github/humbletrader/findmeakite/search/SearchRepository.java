@@ -1,5 +1,6 @@
 package com.github.humbletrader.findmeakite.search;
 
+import com.github.humbletrader.fmak.query.ParameterizedStatement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
