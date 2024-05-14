@@ -1,5 +1,7 @@
 package com.github.humbletrader.findmeakite.search;
 
+import com.github.humbletrader.fmak.query.SearchValAndOp;
+
 import java.util.Map;
 
 public class SearchCriteria {
