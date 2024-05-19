@@ -234,10 +234,11 @@ function saveNotification(){
         return;
     }
 
+    var email = prompt("Email:")
     var postData = {
         "supporterToken" : collectSupporterToken(),
         "criteria" : collectCriteriaValues(criteriaCount),
-        "email" : "muci@gmail.com"
+        "email" : email
        }
        console.log("sending to server..."+JSON.stringify(postData));
        var ajaxCallResult = $.ajax({
