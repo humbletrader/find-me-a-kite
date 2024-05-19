@@ -237,7 +237,7 @@ function saveNotification(){
     var postData = {
         "supporterToken" : collectSupporterToken(),
         "criteria" : collectCriteriaValues(criteriaCount),
-        "email" : "test@gmail.com"
+        "email" : "muci@gmail.com"
        }
        console.log("sending to server..."+JSON.stringify(postData));
        var ajaxCallResult = $.ajax({

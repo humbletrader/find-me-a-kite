@@ -28,7 +28,7 @@ public class NotificationService {
             var searchCriteriaAsObject = searchCriteria.getCriteria();
             try {
                 var searchCriteriaAsJson = jsonObjectMapper.writeValueAsString(searchCriteriaAsObject);
-                notificationRepo.saveNotification(new NotificationDbEntity(searchCriteria.getEmail(), searchCriteriaAsJson));
+                notificationRepo.saveNotification(new NotificationDbEntity(searchCriteria.getEmail(), searchCriteriaAsJson, 0));
                 return new SaveNotificationResult("success", "notification successfully saved");
 
             } catch (JsonProcessingException jsonExc){

@@ -18,7 +18,12 @@ public class NotificationRepository {
 
     public void saveNotification(NotificationDbEntity notification){
         logger.info("saving notification {}", notification);
-        jdbcTemplate.update("insert into notifications(email, query_as_json) values ( '"+notification.email() +"', '"+notification.queryAsJson()+"' )");
+        jdbcTemplate.update(
+                "insert into notifications(email, query_as_json, run_count) values ( ?, ?, ? ) ",
+                notification.email(),
+                notification.queryAsJson(),
+                notification.runCount()
+        );
     }
 
 }
