@@ -4,6 +4,7 @@ var criteria = ["brand", "product_name", "subprod_name", "version", "year", "siz
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
+var criteriaOperatorIdPrefix = "criteriaOperator";
 var criteriaNameIdPrefix = "criteriaValue";
 var NO_SUPPORTER = "none";
 
@@ -44,7 +45,7 @@ function displayNewCriteriaRow(){
 
     var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
 
-    //select
+    //select with criteria ( brand, product, etc)
     var selectHtmlForCriteria = $("<select onchange='populateDistinctValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .attr("class", "form-control")
@@ -54,6 +55,12 @@ function displayNewCriteriaRow(){
     criteria.forEach(item => {
             $("<option>").val(item).text(item).appendTo(selectHtmlForCriteria);
     });
+
+    //select with operators
+    var selectHtmlForOperators = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
+             .attr("class", "form-control")
+             .appendTo(newSearchCriteriaRow);
+    $("<option>").val("=").text("=").appendTo(selectHtmlForOperators);
 
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
