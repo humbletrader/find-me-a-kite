@@ -58,11 +58,12 @@ function displayNewCriteriaRow(){
 
     var inputGroupAppendInFirstCol = $("<div class='input-group-append'>").appendTo(firstColumn)
     //select with operators
-    var equalsButton = $("<button>").attr({
-            id : 'equals'+criteriaCount,
-            class: "form-control"
-         }).appendTo(inputGroupAppendInFirstCol)
-    $("<i>").attr("class", "fas fa-equals").appendTo(equalsButton)
+
+    var selectHtmlForOperators = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
+                .attr("style", "background: none !important;")
+                .appendTo(inputGroupAppendInFirstCol);
+    $("<option>").val("eq").text("=").attr("selected", "selected").appendTo(selectHtmlForOperators);
+    $("<option>").val("lte").text("<").appendTo(selectHtmlForOperators);
 
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
@@ -270,7 +271,7 @@ function saveNotification(){
        return ajaxCallResult;
 }
 
-window.onload = function(){
-    $("#newsModalDialog").modal()
-}
+//window.onload = function(){
+//    $("#newsModalDialog").modal()
+//}
 
