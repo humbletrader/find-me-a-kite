@@ -56,11 +56,13 @@ function displayNewCriteriaRow(){
             $("<option>").val(item).text(item).appendTo(selectHtmlForCriteria);
     });
 
+    var inputGroupAppendInFirstCol = $("<div class='input-group-append'>").appendTo(firstColumn)
     //select with operators
-    var selectHtmlForOperators = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
-             .attr("class", "form-control")
-             .appendTo(newSearchCriteriaRow);
-    $("<option>").val("=").text("=").appendTo(selectHtmlForOperators);
+    var equalsButton = $("<button>").attr({
+            id : 'equals'+criteriaCount,
+            class: "form-control"
+         }).appendTo(inputGroupAppendInFirstCol)
+    $("<i>").attr("class", "fas fa-equals").appendTo(equalsButton)
 
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
