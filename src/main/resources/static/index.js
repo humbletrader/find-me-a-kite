@@ -1,6 +1,6 @@
 
 var chooseItemText = "Choose..."
-var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition"];
+var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition", "price"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
@@ -60,7 +60,10 @@ function displayNewCriteriaRow(){
     //select with operators
 
     var selectHtmlForOperators = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
-                .attr("style", "background: none !important;")
+                .attr({
+                    style: "background: none !important;",
+                    //class: "form-control"
+                })
                 .appendTo(inputGroupAppendInFirstCol);
     $("<option>").val("eq").text("=").attr("selected", "selected").appendTo(selectHtmlForOperators);
     $("<option>").val("lte").text("<").appendTo(selectHtmlForOperators);
@@ -102,8 +105,9 @@ function collectCriteriaValues(divCount){
 
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
+        var selectedOperator = $("#"+criteriaOperatorIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
-        criteria[selectedCriteria] = {"value": selectedCriteriaValue, "op": "eq"};
+        criteria[selectedCriteria] = {"value": selectedCriteriaValue, "op": selectedOperator};
     }
 
     return criteria;
@@ -161,6 +165,7 @@ function populateDistinctValues(divCount){
          });
 }
 
+//find the next page of data
 //1. collect search criteria
 //2. call to server for the given criteria
 //3. display items in table
