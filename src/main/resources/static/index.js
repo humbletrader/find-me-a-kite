@@ -67,6 +67,7 @@ function displayNewCriteriaRow(){
                 .appendTo(inputGroupAppendInFirstCol);
     $("<option>").val("eq").text("=").attr("selected", "selected").appendTo(selectHtmlForOperators);
     $("<option>").val("lte").text("<").appendTo(selectHtmlForOperators);
+    $("<option>").val("gte").text(">").appendTo(selectHtmlForOperators);
 
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
@@ -134,6 +135,21 @@ function populateDistinctValues(divCount){
 
     //if there's no criteria selected we skip the network call
     if(currentCriteria == "none") return;
+    else if(currentCriteria == "price"){
+        //for price we don't call the distinct values endpoint
+        var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount);
+        criteriaValueHtmlSelect.removeAttr("disabled");
+        for(var price=0; price<4000; price+=200){
+            var priceOption = $("<option>").text(price)
+            if(price === 1000){
+                priceOption.attr("selected", "selected")
+            }
+            priceOption.appendTo(criteriaValueHtmlSelect);
+        }
+        return;
+    }
+
+    //so it's not price -> select input ( call to server for distinct values)
     var result = { "target" : currentCriteria}
     result["criteria"] = collectCriteriaValues(divCount);
 
@@ -276,7 +292,7 @@ function saveNotification(){
        return ajaxCallResult;
 }
 
-//window.onload = function(){
-//    $("#newsModalDialog").modal()
-//}
+window.onload = function(){
+    $("#newsModalDialog").modal()
+}
 
