@@ -12,7 +12,7 @@
 
 	<groupId>com.github.humbletrader</groupId>
 	<artifactId>findmeakite</artifactId>
-	<version>1.8.3</version>
+	<version>1.9.0</version>
 	<name>find-me-a-kite</name>
 	<description>Scanner for cheap kitesurfing gear</description>
 
@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>com.github.humbletrader</groupId>
 			<artifactId>findmeakite-sql-builder</artifactId>
-			<version>1.0.4</version>
+			<version>1.2.1</version>
 		</dependency>
 
 	</dependencies>

@@ -1,9 +1,10 @@
 
 var chooseItemText = "Choose..."
-var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition"];
+var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition", "price"];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
+var criteriaOperatorIdPrefix = "criteriaOperator";
 var criteriaNameIdPrefix = "criteriaValue";
 var NO_SUPPORTER = "none";
 
@@ -44,7 +45,7 @@ function displayNewCriteriaRow(){
 
     var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
 
-    //select
+    //select with criteria ( brand, product, etc)
     var selectHtmlForCriteria = $("<select onchange='populateDistinctValues(\""+criteriaCount+"\")'>")
         .attr("id",  criteriaNameIdPrefix+criteriaCount)
         .attr("class", "form-control")
@@ -54,6 +55,19 @@ function displayNewCriteriaRow(){
     criteria.forEach(item => {
             $("<option>").val(item).text(item).appendTo(selectHtmlForCriteria);
     });
+
+    var inputGroupAppendInFirstCol = $("<div class='input-group-append'>").appendTo(firstColumn)
+    //select with operators
+
+    var selectHtmlForOperators = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
+                .attr({
+                    style: "background: none !important;",
+                    //class: "form-control"
+                })
+                .appendTo(inputGroupAppendInFirstCol);
+    $("<option>").val("eq").text("=").attr("selected", "selected").appendTo(selectHtmlForOperators);
+    $("<option>").val("lte").text("<").appendTo(selectHtmlForOperators);
+    $("<option>").val("gte").text(">").appendTo(selectHtmlForOperators);
 
     //select with values
     var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
@@ -92,8 +106,9 @@ function collectCriteriaValues(divCount){
 
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
+        var selectedOperator = $("#"+criteriaOperatorIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
-        criteria[selectedCriteria] = {"value": selectedCriteriaValue, "op": "eq"};
+        criteria[selectedCriteria] = {"value": selectedCriteriaValue, "op": selectedOperator};
     }
 
     return criteria;
@@ -120,6 +135,21 @@ function populateDistinctValues(divCount){
 
     //if there's no criteria selected we skip the network call
     if(currentCriteria == "none") return;
+    else if(currentCriteria == "price"){
+        //for price we don't call the distinct values endpoint
+        var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount);
+        criteriaValueHtmlSelect.removeAttr("disabled");
+        for(var price=0; price<4000; price+=200){
+            var priceOption = $("<option>").text(price)
+            if(price === 1000){
+                priceOption.attr("selected", "selected")
+            }
+            priceOption.appendTo(criteriaValueHtmlSelect);
+        }
+        return;
+    }
+
+    //so it's not price -> select input ( call to server for distinct values)
     var result = { "target" : currentCriteria}
     result["criteria"] = collectCriteriaValues(divCount);
 
@@ -151,6 +181,7 @@ function populateDistinctValues(divCount){
          });
 }
 
+//find the next page of data
 //1. collect search criteria
 //2. call to server for the given criteria
 //3. display items in table
