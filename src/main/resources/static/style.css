@@ -1,0 +1,83 @@
+/* Custom Color Variables */
+:root {
+    --blue: #004080; /* Replace turquoise with a more blue shade */
+    --light-blue: #cce7ff; /* A light blue for accents */
+    --white: #ffffff;
+    --charcoal: #2F4F4F;
+}
+
+/* Banner with Blue and White Filter */
+.banner {
+    background-image: url('images/banner.webp'); /* Ensure the correct path */
+    background-size: cover; /* Ensure the image covers the section */
+    background-position: center; /* Center the image */
+    //height: 200px; /* Adjust height to your preference */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    filter: grayscale(100%) sepia(100%) hue-rotate(190deg) saturate(300%);
+}
+
+.banner h1, .banner p {
+    color: var(--white); /* Ensure text is readable */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add text shadow for contrast */
+}
+
+/* Global Styles */
+body {
+    background-color: var(--light-blue); /* Updated for a cohesive blue theme */
+    color: var(--charcoal);
+    font-family: Arial, sans-serif;
+}
+
+.bg-blue {
+    background-color: var(--blue);
+}
+
+.text-white {
+    color: var(--white);
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: var(--blue);
+    border-bottom: 2px solid var(--light-blue);
+}
+
+.navbar .nav-link {
+    color: var(--white);
+}
+
+.navbar .nav-link:hover {
+    color: var(--light-blue);
+}
+
+/* Button Styles */
+.btn {
+    background-color: var(--blue);
+    color: var(--white);
+    border: none;
+}
+
+.btn:hover {
+    background-color: var(--light-blue);
+    color: var(--charcoal);
+}
+
+/* Table Styling */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--light-blue);
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: var(--white);
+}
+
+/* Footer */
+footer {
+    background-color: var(--blue);
+    color: var(--white);
+    padding: 1rem;
+    text-align: center;
+}
