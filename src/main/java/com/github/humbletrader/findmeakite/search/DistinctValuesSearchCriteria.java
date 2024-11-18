@@ -6,12 +6,21 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SequencedSet;
+import java.util.stream.Collectors;
 
 public class DistinctValuesSearchCriteria {
 
     private final String target;
     private final Map<String, List<SearchValAndOp>> criteriaNamesAndValues;
 
+
+//    {"target":"year",
+//            "criteria":
+//                {
+//                    "category":[{"value":"KITES","op":"eq"}],
+//                    "country":[{"value":"EU","op":"eq"}]
+//                }
+//    }
     public DistinctValuesSearchCriteria(String target, Map<String, List<SearchValAndOp>> criteria) {
         this.target = target;
         this.criteriaNamesAndValues = criteria;
@@ -22,12 +31,9 @@ public class DistinctValuesSearchCriteria {
     }
 
     public Map<String, SequencedSet<SearchValAndOp>> getCriteria(){
-        return criteriaNamesAndValues.entrySet().stream().collect(
-                java.util.stream.Collectors.toMap(
-                        java.util.Map.Entry::getKey,
-                        e -> new LinkedHashSet<>(e.getValue())
-                )
-        );
+        return criteriaNamesAndValues.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> new LinkedHashSet<>(e.getValue())));
     }
 
     @Override

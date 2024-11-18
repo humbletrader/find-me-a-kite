@@ -27,7 +27,8 @@ public class SearchCriteria {
     }
 
     public Map<String, SequencedSet<SearchValAndOp>> getCriteria() {
-        return criteria.entrySet().stream()
+        return criteria.entrySet()
+                .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> new LinkedHashSet<>(e.getValue())));
     }
 
