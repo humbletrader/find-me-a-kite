@@ -22,9 +22,9 @@ public class SearchService {
 
     private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = Set.of("price", "size", "color");
 
-    private SearchRepository searchRepository;
-    private SupporterService supporterService;
-    private FmakSqlBuilder sqlBuilder = new FmakSqlBuilder(ROWS_DISPLAYED_PER_PAGE);
+    private final SearchRepository searchRepository;
+    private final SupporterService supporterService;
+    private final FmakSqlBuilder sqlBuilder = new FmakSqlBuilder(ROWS_DISPLAYED_PER_PAGE);
 
 
     public SearchService(SupporterService supporterService, SearchRepository searchRepository){

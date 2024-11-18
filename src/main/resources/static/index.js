@@ -100,15 +100,21 @@ function deleteCriteriaBelow(divCount){
 
 function collectCriteriaValues(divCount){
     var criteria = {
-        "category" : {"value" : $("#category").val(), "op": "eq"},
-        "country" : {"value": $("#country").val(), "op": "eq"}
+        "category" : [{"value" : $("#category").val(), "op": "eq"}],
+        "country" : [{"value": $("#country").val(), "op": "eq"}]
     }
 
     for(i=0; i < divCount; i++){
         var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
         var selectedOperator = $("#"+criteriaOperatorIdPrefix + i).val();
         var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
-        criteria[selectedCriteria] = {"value": selectedCriteriaValue, "op": selectedOperator};
+        var newValueAndOperator = {"value": selectedCriteriaValue, "op": selectedOperator};
+
+        if(criteria[selectedCriteria]) {
+            criteria[selectedCriteria].push(newValueAndOperator);
+        }else{
+            criteria[selectedCriteria] = [newValueAndOperator];
+        }
     }
 
     return criteria;

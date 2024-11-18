@@ -3,15 +3,16 @@ package com.github.humbletrader.findmeakite.search;
 import com.github.humbletrader.fmak.query.SearchValAndOp;
 
 import java.util.Map;
+import java.util.SequencedSet;
 
 public class SearchCriteria {
 
-    private int page;
-    private Map<String, SearchValAndOp> criteria;
-    private String supporterToken;
+    private final int page;
+    private final Map<String, SequencedSet<SearchValAndOp>> criteria;
+    private final String supporterToken;
 
     public SearchCriteria(int page,
-                          Map<String, SearchValAndOp> criteria,
+                          Map<String, SequencedSet<SearchValAndOp>> criteria,
                           String token) {
         this.page = page;
         this.criteria = criteria;
@@ -22,7 +23,7 @@ public class SearchCriteria {
         return page;
     }
 
-    public Map<String, SearchValAndOp> getCriteria() {
+    public Map<String, SequencedSet<SearchValAndOp>> getCriteria() {
         return criteria;
     }
 
