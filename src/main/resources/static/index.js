@@ -140,8 +140,8 @@ function populateDistinctValues(divCount){
     var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
 
     //if there's no criteria selected we skip the network call
-    if(currentCriteria == "none") return;
-    else if(currentCriteria == "price"){
+    if(currentCriteria === "none") return;
+    else if(currentCriteria === "price"){
         //for price we don't call the distinct values endpoint
         var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount);
         criteriaValueHtmlSelect.removeAttr("disabled");
@@ -156,15 +156,17 @@ function populateDistinctValues(divCount){
     }
 
     //so it's not price -> select input ( call to server for distinct values)
-    var result = { "target" : currentCriteria}
-    result["criteria"] = collectCriteriaValues(divCount);
+    var postData = {
+        "target": currentCriteria,
+        "criteria" : collectCriteriaValues(divCount)
+    }
 
-    console.log("populate values for " + JSON.stringify(result));
+    console.log("populate distinct values for " + JSON.stringify(postData));
 
      $.ajax({
             url: "/searchDistinctValues",
             contentType : "application/json",
-            data: JSON.stringify(result),
+            data: JSON.stringify(postData),
             type: "POST",
             dataType : "json",
          })
@@ -180,7 +182,7 @@ function populateDistinctValues(divCount){
             alert( "Sorry, there was a problem!" );
             console.log( "Error: " + errorThrown );
             console.log( "Status: " + status );
-            console.dir( xhr );
+            console.log( xhr );
          })
          .always(function( xhr, status ) {
             console.log( "The request is complete!" );
@@ -256,7 +258,7 @@ function find(pageToFind){
         alert( "Sorry, there was a problem!" );
         console.log( "Error: " + errorThrown );
         console.log( "Status: " + status );
-        console.dir( xhr );
+        console.log( xhr );
    })
    .always(function( xhr, status ) {
        console.log( "The request is complete!" );

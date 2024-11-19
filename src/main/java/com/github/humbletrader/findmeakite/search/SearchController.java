@@ -19,19 +19,19 @@ public class SearchController {
         this.searchService = findService;
     }
 
-    @GetMapping(path = "/categories", consumes = {"application/json"})
+    @GetMapping(path = "/categories", consumes = {"application/json;charset=UTF-8"})
     public ResponseEntity<Iterable<String>> retrieveCategories() {
         logger.info("retrieving supported categories ...");
         return new ResponseEntity<>(searchService.findCategories(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/searchDistinctValues", consumes = {"application/json"})
+    @PostMapping(path = "/searchDistinctValues", consumes = {"application/json;charset=UTF-8"})
     public ResponseEntity<Iterable<String>> retrieveDistinctValues(@RequestBody DistinctValuesSearchCriteria data){
         logger.info("searching distinct values for {}", data);
         return new ResponseEntity<>(searchService.searchDistinctValuesByCriteria(data), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/search")
+    @PostMapping(path = "/search", consumes = {"application/json;charset=UTF-8"})
     public ResponseEntity<SearchResultPage> retrieveProduct(@RequestBody SearchCriteria criteria) {
         logger.info("searching products by {} ", criteria);
         return new ResponseEntity<>(searchService.searchByCriteria(criteria), HttpStatus.OK);
