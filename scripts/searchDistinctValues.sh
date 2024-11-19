@@ -10,4 +10,4 @@ printf "\n**********************************************************\n"
 curl -v http://$APP_HOST:$APP_PORT/searchDistinctValues \
      --header "Content-Type: application/json" \
      --request POST \
-     --data '{"target":"brand","criteria":{}}'
+     --data '{"target":"brand","criteria":{"category":[{"value":"KITES","op":"eq"}],"country":[{"value":"EU","op":"eq"}]}}'
