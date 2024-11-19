@@ -20,8 +20,6 @@ public class SearchService {
 
     public final static int ROWS_DISPLAYED_PER_PAGE = 20;
 
-    private final static Set<String> PRODUCT_ATTRIBUTES_COLUMNS = Set.of("price", "size", "color");
-
     private final SearchRepository searchRepository;
     private final SupporterService supporterService;
     private final FmakSqlBuilder sqlBuilder = new FmakSqlBuilder(ROWS_DISPLAYED_PER_PAGE);
