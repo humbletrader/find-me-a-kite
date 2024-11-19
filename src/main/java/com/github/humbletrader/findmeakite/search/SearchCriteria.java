@@ -1,5 +1,6 @@
 package com.github.humbletrader.findmeakite.search;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.humbletrader.fmak.query.SearchValAndOp;
 
 import java.util.LinkedHashSet;
@@ -26,9 +27,9 @@ public class SearchCriteria {
     //        ]
     //   }
     //}
-    public SearchCriteria(int page,
-                          Map<String, List<SearchValAndOp>> criteria,
-                          String token) {
+    public SearchCriteria(@JsonProperty("page") int page,
+                          @JsonProperty("criteria") Map<String, List<SearchValAndOp>> criteria,
+                          @JsonProperty("token") String token) {
         this.page = page;
         this.criteria = criteria;
         this.supporterToken = token;

@@ -1,5 +1,6 @@
 package com.github.humbletrader.findmeakite.search;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.humbletrader.fmak.query.SearchValAndOp;
 
 import java.util.LinkedHashSet;
@@ -42,7 +43,7 @@ public class DistinctValuesSearchCriteria {
 //                    "country":[{"value":"EU","op":"eq"}]
 //                }
 //    }
-    public DistinctValuesSearchCriteria(String target, Map<String, List<SearchValAndOp>> criteria) {
+    public DistinctValuesSearchCriteria(@JsonProperty("target") String target, @JsonProperty("criteria") Map<String, List<SearchValAndOp>> criteria) {
         this.target = target;
         this.criteriaNamesAndValues = criteria;
     }
