@@ -27,8 +27,8 @@ public class SearchController {
 
     @PostMapping(path = "/searchDistinctValues", consumes = {"application/json;charset=UTF-8"})
     public ResponseEntity<Iterable<String>> retrieveDistinctValues(@RequestBody DistinctValuesSearchCriteria criteria){
-        logger.info("searching distinct values for {}", data);
-        return new ResponseEntity<>(searchService.searchDistinctValuesByCriteria(data), HttpStatus.OK);
+        logger.info("searching distinct values for {}", criteria);
+        return new ResponseEntity<>(searchService.searchDistinctValuesByCriteria(criteria), HttpStatus.OK);
     }
 
     @PostMapping(path = "/search", consumes = {"application/json;charset=UTF-8"})
