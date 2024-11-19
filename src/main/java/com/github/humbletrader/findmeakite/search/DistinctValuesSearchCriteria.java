@@ -13,10 +13,31 @@ public class DistinctValuesSearchCriteria {
     private final String target;
     private final Map<String, List<SearchValAndOp>> criteriaNamesAndValues;
 
+    //{ "page":0,
+    //  "supporterToken":"none",
+    //  "criteria":{
+    //      "category":[
+    //          {"value":"KITES","op":"eq"}
+    //       ],
+    //       "country":[
+    //          {"value":"EU","op":"eq"}
+    //        ]
+    //   }
+    //}
 
-//    {"target":"year",
-//            "criteria":
-//                {
+    //{"target":"brand",
+    // "criteria":{
+    //      "category":[
+    //             {"value":"KITES","op":"eq"}
+    //      ],
+    //      "country":[
+    //          {"value":"EU","op":"eq"}
+    //      ]
+    //  }
+    //}
+
+//    {"target": "year",
+//      "criteria":{
 //                    "category":[{"value":"KITES","op":"eq"}],
 //                    "country":[{"value":"EU","op":"eq"}]
 //                }

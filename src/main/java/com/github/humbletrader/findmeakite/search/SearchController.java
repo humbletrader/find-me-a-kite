@@ -13,19 +13,19 @@ public class SearchController {
 
     private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
-    private SearchService searchService;
+    private final SearchService searchService;
 
     public SearchController(SearchService findService) {
         this.searchService = findService;
     }
 
-    @GetMapping(path = "/categories")
+    @GetMapping(path = "/categories", consumes = {"application/json"})
     public ResponseEntity<Iterable<String>> retrieveCategories() {
         logger.info("retrieving supported categories ...");
         return new ResponseEntity<>(searchService.findCategories(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/searchDistinctValues")
+    @PostMapping(path = "/searchDistinctValues", consumes = {"application/json"})
     public ResponseEntity<Iterable<String>> retrieveDistinctValues(@RequestBody DistinctValuesSearchCriteria data){
         logger.info("searching distinct values for {}", data);
         return new ResponseEntity<>(searchService.searchDistinctValuesByCriteria(data), HttpStatus.OK);

@@ -14,6 +14,18 @@ public class SearchCriteria {
     private final Map<String, List<SearchValAndOp>> criteria;
     private final String supporterToken;
 
+
+    //{ "page":0,
+    //  "supporterToken":"none",
+    //  "criteria":{
+    //      "category":[
+    //          {"value":"KITES","op":"eq"}
+    //       ],
+    //       "country":[
+    //          {"value":"EU","op":"eq"}
+    //        ]
+    //   }
+    //}
     public SearchCriteria(int page,
                           Map<String, List<SearchValAndOp>> criteria,
                           String token) {
