@@ -221,7 +221,7 @@ function find(pageToFind){
             const resultLineTr = $("<tr>");
 
             const linkTd = $("<td>")
-            linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link).attr("target", "_blank"));
+            linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link).attr("target", "_blank").attr("rel", "noreferrer"));
             resultLineTr.append(linkTd)
 
             $("<td>").text(item.size).appendTo(resultLineTr)
