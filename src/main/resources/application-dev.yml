@@ -4,6 +4,8 @@ server:
 
 #h2 database properties
 spring :
+  main:
+    banner-mode: "on"
   datasource :
     driverClassName: org.postgresql.Driver
     url: "jdbc:postgresql://localhost:5433/postgres"
