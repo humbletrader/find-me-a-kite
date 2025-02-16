@@ -1,6 +1,16 @@
 
 var chooseItemText = "Choose..."
-var criteria = ["brand", "product_name", "subprod_name", "version", "year", "size", "condition", "price"];
+var criteria = [
+    "brand",
+    "product_name",
+    "subprod_name",
+    "version",
+    "year",
+    "size",
+    "condition",
+    "price",
+    "construction_tech"
+];
 var criteriaCount = 0;
 var criteriaDivIdPrefix = "criteriaRow";
 var criteriaValueIdPrefix = "criteria";
