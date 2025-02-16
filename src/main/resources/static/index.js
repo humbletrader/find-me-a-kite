@@ -301,6 +301,9 @@ function saveNotification(){
 }
 
 window.onload = function(){
-    $("#newsModalDialog").modal()
+    const urlParams = new URLSearchParams(window.location.search);
+    if(!urlParams.has("supporter")){
+        $("#newsModalDialog").modal()
+    }
 }
 

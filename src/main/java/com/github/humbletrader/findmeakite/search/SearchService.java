@@ -43,7 +43,7 @@ public class SearchService {
     public SearchResultPage searchByCriteria(SearchCriteria criteria){
         logger.info("searching products by criteria {} ", criteria);
 
-        ParameterizedStatement sql = sqlBuilder.buildSearchSql(criteria.getCriteria(), criteria.getPage());
+        ParameterizedStatement sql = sqlBuilder.buildSearchSqlForWebFilters(criteria.getCriteria(), criteria.getPage());
         List<SearchResultItem> result = searchRepository.pagedSearchByCriteria(sql);
 
         boolean hasNextPage = result.size() > ROWS_DISPLAYED_PER_PAGE;
