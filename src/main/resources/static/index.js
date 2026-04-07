@@ -1,6 +1,6 @@
+const { useState, useEffect, useRef } = React;
 
-var chooseItemText = "Choose..."
-var criteria = [
+const CRITERIA_OPTIONS = [
     "brand",
     "product_name",
     "subprod_name",
@@ -11,309 +11,371 @@ var criteria = [
     "price",
     "construction_tech"
 ];
-var criteriaCount = 0;
-var criteriaDivIdPrefix = "criteriaRow";
-var criteriaValueIdPrefix = "criteria";
-var criteriaOperatorIdPrefix = "criteriaOperator";
-var criteriaNameIdPrefix = "criteriaValue";
-var NO_SUPPORTER = "none";
 
-function disableFilterInputsForLevel(level){
-    console.log("disabling input #"+criteriaNameIdPrefix+level)
-    $("#"+criteriaNameIdPrefix+level).attr("disabled", "disabled");
-    $("#"+criteriaValueIdPrefix+level).attr("disabled", "disabled");
-}
+const NO_SUPPORTER = "none";
 
-function previousFormsHaveCorrectStatus(){
-    if(criteriaCount > 0){
-        var selectedCriteria = $("#"+criteriaNameIdPrefix + (criteriaCount-1)).val();
-        var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + (criteriaCount-1)).val();
-        console.log("selected criteria: "+selectedCriteria +" and value: "+selectedCriteriaValue);
-        return selectedCriteria != "none" && selectedCriteriaValue != "none";
-    }else{
-        return true;
-    }
-}
-
-function displayNewCriteriaRow(){
-
-    if(!previousFormsHaveCorrectStatus()){
-        alert("please fill the existing forms before adding new filters");
-        return;
-    }
-
-    //disable previous criteria
-    if(criteriaCount > 0) disableFilterInputsForLevel(criteriaCount - 1)
-
-    //div
-    var newSearchCriteriaRow = $("<div>")
-        .attr({
-            id : criteriaDivIdPrefix + criteriaCount,
-            class : "input-group mb-3"
-         })
-        .appendTo("#searchCriteria");
-
-    var firstColumn = $("<div class='input-group-prepend'>").appendTo(newSearchCriteriaRow)
-
-    //select with criteria ( brand, product, etc)
-    var selectHtmlForCriteria = $("<select onchange='populateDistinctValues(\""+criteriaCount+"\")'>")
-        .attr("id",  criteriaNameIdPrefix+criteriaCount)
-        .attr("class", "form-control")
-        .appendTo(firstColumn);
-    $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForCriteria);
-
-    criteria.forEach(item => {
-            $("<option>").val(item).text(item).appendTo(selectHtmlForCriteria);
-    });
-
-    var inputGroupAppendInFirstCol = $("<div class='input-group-append'>").appendTo(firstColumn)
-    //select with operators
-
-    var selectHtmlForOperators = $("<select id=\""+criteriaOperatorIdPrefix+criteriaCount+"\">")
-                .attr({
-                    style: "background: none !important;",
-                    //class: "form-control"
-                })
-                .appendTo(inputGroupAppendInFirstCol);
-    $("<option>").val("eq").text("=").attr("selected", "selected").appendTo(selectHtmlForOperators);
-    $("<option>").val("lte").text("<").appendTo(selectHtmlForOperators);
-    $("<option>").val("gte").text(">").appendTo(selectHtmlForOperators);
-
-    //select with values
-    var selectHtmlForValues = $("<select id=\""+criteriaValueIdPrefix+criteriaCount+"\">")
-            .attr("class", "form-control")
-            .attr("disabled", "disabled")
-            .appendTo(newSearchCriteriaRow);
-    $("<option>").val("none").text(chooseItemText).appendTo(selectHtmlForValues);
-
-
-    var thirdColumn = $("<div class='input-group-append'>").appendTo(newSearchCriteriaRow)
-    //delete button
-    var deleteButton = $("<button onclick='deleteCriteriaBelow("+criteriaCount+")'>").attr({
-        id : 'delete'+criteriaCount,
-        class: "form-control"
-     }).appendTo(thirdColumn)
-     $("<i>").attr("class", "fas fa-trash").appendTo(deleteButton)
-
-    criteriaCount = criteriaCount + 1;
-}
-
-function deleteCriteriaBelow(divCount){
-    for(i=divCount; i < criteriaCount; i++){
-        //console.log("removing row "+i+" from criteria")
-        $("#"+criteriaDivIdPrefix+i).remove();
-    }
-    //console.log("removing "+(criteriaCount - divCount)+" from criteria count")
-    criteriaCount = criteriaCount - (criteriaCount - divCount);
-    //console.log("criteriaCount "+criteriaCount)
-}
-
-function collectCriteriaValues(divCount){
-    var criteria = {
-        "category" : [{"value" : $("#category").val(), "op": "eq"}],
-        "country" : [{"value": $("#country").val(), "op": "eq"}]
-    }
-
-    for(i=0; i < divCount; i++){
-        var selectedCriteria = $("#"+criteriaNameIdPrefix + i).val();
-        var selectedOperator = $("#"+criteriaOperatorIdPrefix + i).val();
-        var selectedCriteriaValue = $("#"+criteriaValueIdPrefix + i).val();
-        var newValueAndOperator = {"value": selectedCriteriaValue, "op": selectedOperator};
-
-        if(criteria[selectedCriteria]) {
-            criteria[selectedCriteria].push(newValueAndOperator);
-        }else{
-            criteria[selectedCriteria] = [newValueAndOperator];
+function buildCriteriaPayload(country, category, filters, upToIndex) {
+    const criteria = {
+        "category": [{ "value": category, "op": "eq" }],
+        "country": [{ "value": country, "op": "eq" }]
+    };
+    for (let i = 0; i < upToIndex; i++) {
+        const f = filters[i];
+        if (f.name !== "none" && f.value !== "none") {
+            const entry = { "value": f.value, "op": f.operator };
+            if (criteria[f.name]) {
+                criteria[f.name].push(entry);
+            } else {
+                criteria[f.name] = [entry];
+            }
         }
     }
-
     return criteria;
 }
 
-function collectSupporterToken(){
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.has("supporter")){
-        return urlParams.get("supporter");
-    } else {
-        return NO_SUPPORTER;
-    }
-}
+function App() {
+    const [country, setCountry] = useState("EU");
+    const [category, setCategory] = useState("KITES");
+    const [filters, setFilters] = useState([]);
+    const [searchResults, setSearchResults] = useState(null);
+    const newsModalRef = useRef(null);
 
-// 1. get the current search criteria
-// 2. call server for distinct values for selected colum
-// 3. display distinct values
-function populateDistinctValues(divCount){
-    //delete previous options in select
-    $("#"+criteriaValueIdPrefix+divCount).empty();
-    $("<option>").val("none").text(chooseItemText).appendTo("#"+criteriaValueIdPrefix+divCount);
-
-    var currentCriteria = $("#"+criteriaNameIdPrefix + divCount).val();
-
-    //if there's no criteria selected we skip the network call
-    if(currentCriteria === "none") return;
-    else if(currentCriteria === "price"){
-        //for price we don't call the distinct values endpoint
-        var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount);
-        criteriaValueHtmlSelect.removeAttr("disabled");
-        for(var price=0; price<4000; price+=200){
-            var priceOption = $("<option>").text(price)
-            if(price === 1000){
-                priceOption.attr("selected", "selected")
-            }
-            priceOption.appendTo(criteriaValueHtmlSelect);
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has("supporter")) {
+            const modal = new bootstrap.Modal(newsModalRef.current);
+            modal.show();
         }
-        return;
+    }, []);
+
+    function collectSupporterToken() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.has("supporter") ? urlParams.get("supporter") : NO_SUPPORTER;
     }
 
-    //so it's not price -> select input ( call to server for distinct values)
-    var postData = {
-        "target": currentCriteria,
-        "criteria" : collectCriteriaValues(divCount)
+    function handleCountryChange(e) {
+        setCountry(e.target.value);
+        setFilters([]);
     }
 
-    console.log("populate distinct values for " + JSON.stringify(postData));
-
-     $.ajax({
-            url: "/searchDistinctValues",
-            contentType : "application/json",
-            data: JSON.stringify(postData),
-            type: "POST",
-            dataType : "json",
-         })
-         .done(function( distinctValues ) {
-             console.log(distinctValues);
-             distinctValues.forEach(item => {
-                var criteriaValueHtmlSelect = $("#"+criteriaValueIdPrefix+divCount);
-                criteriaValueHtmlSelect.removeAttr("disabled");
-                $("<option>").text(item).appendTo(criteriaValueHtmlSelect);
-             });
-         })
-         .fail(function( xhr, status, errorThrown ) {
-            alert( "Sorry, there was a problem!" );
-            console.log( "Error: " + errorThrown );
-            console.log( "Status: " + status );
-            console.log( xhr );
-         })
-         .always(function( xhr, status ) {
-            console.log( "The request is complete!" );
-         });
-}
-
-//find the next page of data
-//1. collect search criteria
-//2. call to server for the given criteria
-//3. display items in table
-function find(pageToFind){
-
-    if(!previousFormsHaveCorrectStatus()){
-        alert("please fill all forms before search !");
-        return;
+    function handleCategoryChange(e) {
+        setCategory(e.target.value);
+        setFilters([]);
     }
 
-    $("#searchResults").empty();
+    function addFilter() {
+        if (filters.length > 0) {
+            const last = filters[filters.length - 1];
+            if (last.name === "none" || last.value === "none") {
+                alert("please fill the existing forms before adding new filters");
+                return;
+            }
+        }
+        setFilters(prev => [...prev, { name: "none", operator: "eq", value: "none", options: [] }]);
+    }
 
-   var postData = {
-    "page" : pageToFind,
-    "supporterToken" : collectSupporterToken(),
-    "criteria" : collectCriteriaValues(criteriaCount)
-   }
-   console.log("sending to server..."+JSON.stringify(postData));
-   $.ajax({
-        url: "/search",
-        contentType : "application/json",
-        data: JSON.stringify(postData),
-        type: "POST",
-        dataType : "json",
-   })
-   .done(function( searchResultPage ) {
-        console.log(searchResultPage);
-        searchResultPage.items.forEach(item => {
-            const resultLineTr = $("<tr>");
+    function removeFiltersFrom(index) {
+        setFilters(prev => prev.slice(0, index));
+    }
 
-            const linkTd = $("<td>")
-            linkTd.append($("<a>").text(item.brandNameVersion).attr("href", item.link).attr("target", "_blank").attr("rel", "noreferrer"));
-            resultLineTr.append(linkTd)
+    async function handleFilterNameChange(index, newName, currentFilters, currentCountry, currentCategory) {
+        if (newName === "price") {
+            const priceOptions = [];
+            for (let p = 0; p < 4000; p += 200) priceOptions.push(String(p));
+            setFilters(prev => {
+                const updated = prev.slice(0, index + 1);
+                updated[index] = { ...updated[index], name: newName, value: "1000", options: priceOptions };
+                return updated;
+            });
+            return;
+        }
 
-            $("<td>").text(item.size).appendTo(resultLineTr)
-            $("<td>").text(item.price.toFixed(2)).appendTo(resultLineTr)
-            $("<td>").text(item.condition).appendTo(resultLineTr)
-
-            $("#searchResults").append(resultLineTr);
+        setFilters(prev => {
+            const updated = prev.slice(0, index + 1);
+            updated[index] = { ...updated[index], name: newName, value: "none", options: [] };
+            return updated;
         });
 
-        //handle pagination
-        var paginationUl = $(".pagination")
-        paginationUl.empty();
-        for(i=0; i < searchResultPage.currentPage; i++){
-            var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
-            $("<a>").attr({
-                "class" : "page-link",
-                "onclick" : "find("+i+")"
-            }).text(i+1).appendTo(pageLi)
+        if (newName === "none") return;
+
+        const criteria = buildCriteriaPayload(currentCountry, currentCategory, currentFilters, index);
+        const postData = { "target": newName, "criteria": criteria };
+
+        try {
+            const response = await fetch("/searchDistinctValues", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(postData)
+            });
+            const distinctValues = await response.json();
+            setFilters(prev => {
+                const updated = [...prev];
+                if (updated[index] && updated[index].name === newName) {
+                    updated[index] = { ...updated[index], options: distinctValues };
+                }
+                return updated;
+            });
+        } catch (e) {
+            alert("Sorry, there was a problem!");
+            console.error(e);
         }
-        var pageLi = $("<li>").attr("class", "page-item active").appendTo(paginationUl)
-        $("<a>").attr({
-            "class" : "page-link"
-        }).text(searchResultPage.currentPage + 1).appendTo(pageLi)
-
-        if(searchResultPage.nextPage){
-            var pageLi = $("<li>").attr("class", "page-item").appendTo(paginationUl)
-            $("<a>").attr({
-                "class" : "page-link",
-                "onclick" : "find("+(pageToFind+1)+")",
-                }).text("Next").appendTo(pageLi)
-        }
-   })
-   .fail(function( xhr, status, errorThrown ) {
-        alert( "Sorry, there was a problem!" );
-        console.log( "Error: " + errorThrown );
-        console.log( "Status: " + status );
-        console.log( xhr );
-   })
-   .always(function( xhr, status ) {
-       console.log( "The request is complete!" );
-   });
-}
-
-function saveNotification(){
-    var supporterToken = collectSupporterToken();
-
-    if(supporterToken === NO_SUPPORTER){
-        alert("Notifications are only for supporters !");
-        return;
     }
 
-    var email = prompt("Email:")
-    var postData = {
-        "supporterToken" : collectSupporterToken(),
-        "criteria" : collectCriteriaValues(criteriaCount),
-        "email" : email
-       }
-       console.log("sending to server..."+JSON.stringify(postData));
-       var ajaxCallResult = $.ajax({
-            url: "/notification/save",
-            contentType : "application/json",
-            data: JSON.stringify(postData),
-            type: "POST",
-            dataType : "json",
-       })
-       .done(function(saveNotificationResult) {
-            console.log(saveNotificationResult);
-            alert(saveNotificationResult.status + ": "+ saveNotificationResult.reason);
-       })
-       .fail(function( xhr, status, errorThrown ) {
-            console.log( "Error: " + errorThrown );
-            console.log( "Status: " + status );
-            console.dir( xhr );
-            alert("Error: "+errorThrown);
-       });
-       return ajaxCallResult;
-}
-
-window.onload = function(){
-    const urlParams = new URLSearchParams(window.location.search);
-    if(!urlParams.has("supporter")){
-        $("#newsModalDialog").modal()
+    function handleFilterValueChange(index, newValue) {
+        setFilters(prev => {
+            const updated = [...prev];
+            updated[index] = { ...updated[index], value: newValue };
+            return updated;
+        });
     }
+
+    function handleFilterOperatorChange(index, newOperator) {
+        setFilters(prev => {
+            const updated = [...prev];
+            updated[index] = { ...updated[index], operator: newOperator };
+            return updated;
+        });
+    }
+
+    async function find(page) {
+        if (filters.length > 0) {
+            const last = filters[filters.length - 1];
+            if (last.name === "none" || last.value === "none") {
+                alert("please fill all forms before search!");
+                return;
+            }
+        }
+
+        const postData = {
+            "page": page,
+            "supporterToken": collectSupporterToken(),
+            "criteria": buildCriteriaPayload(country, category, filters, filters.length)
+        };
+
+        try {
+            const response = await fetch("/search", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(postData)
+            });
+            const data = await response.json();
+            setSearchResults(data);
+        } catch (e) {
+            alert("Sorry, there was a problem!");
+            console.error(e);
+        }
+    }
+
+    async function saveNotification() {
+        const supporterToken = collectSupporterToken();
+        if (supporterToken === NO_SUPPORTER) {
+            alert("Notifications are only for supporters!");
+            return;
+        }
+
+        const email = prompt("Email:");
+        const postData = {
+            "supporterToken": supporterToken,
+            "criteria": buildCriteriaPayload(country, category, filters, filters.length),
+            "email": email
+        };
+
+        try {
+            const response = await fetch("/notification/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(postData)
+            });
+            const result = await response.json();
+            alert(result.status + ": " + result.reason);
+        } catch (e) {
+            alert("Error: " + e.message);
+            console.error(e);
+        }
+    }
+
+    return (
+        <>
+            <div className="py-5 bg-light text-center">
+                <h1>Find me a kite</h1>
+                <p>Find the cheapest kitesurfing gear available</p>
+            </div>
+
+            <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
+                <div className="container-fluid">
+                    <a className="navbar-brand" href="#">
+                        <i className="fas fa-water"></i>
+                    </a>
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                    <div className="collapse navbar-collapse" id="collapsibleNavbar">
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <a className="nav-link" href="https://github.com/humbletrader/find-me-a-kite">Source Code</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="https://github.com/humbletrader/find-me-a-kite/issues">Bugs</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" href="mailto:findmeakite@outlook.com">Email me</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div className="container pt-3">
+                <div className="row">
+                    <div className="col-sm-5">
+                        <select className="form-select mb-3" value={country} onChange={handleCountryChange}>
+                            <option value="EU">European Union (prices in EUR)</option>
+                            <option value="UK">United Kingdom (prices in GBP)</option>
+                            <option value="USA">United States (prices in USD)</option>
+                        </select>
+
+                        <select className="form-select mb-3" value={category} onChange={handleCategoryChange}>
+                            <option value="KITES">kite</option>
+                            <option value="TWINTIPS">twintip</option>
+                            <option value="BARS">bars (beta)</option>
+                        </select>
+
+                        {filters.map((filter, index) => {
+                            const isLocked = index < filters.length - 1;
+                            return (
+                                <div key={index} className="input-group mb-3">
+                                    <select
+                                        className="form-select"
+                                        value={filter.name}
+                                        disabled={isLocked}
+                                        onChange={e => handleFilterNameChange(index, e.target.value, filters, country, category)}
+                                    >
+                                        <option value="none">Choose...</option>
+                                        {CRITERIA_OPTIONS.map(opt => (
+                                            <option key={opt} value={opt}>{opt}</option>
+                                        ))}
+                                    </select>
+                                    <select
+                                        value={filter.operator}
+                                        style={{ background: "none" }}
+                                        onChange={e => handleFilterOperatorChange(index, e.target.value)}
+                                    >
+                                        <option value="eq">=</option>
+                                        <option value="lte">&lt;</option>
+                                        <option value="gte">&gt;</option>
+                                    </select>
+                                    <select
+                                        className="form-select"
+                                        value={filter.value}
+                                        disabled={isLocked || filter.options.length === 0}
+                                        onChange={e => handleFilterValueChange(index, e.target.value)}
+                                    >
+                                        <option value="none">Choose...</option>
+                                        {filter.options.map(opt => (
+                                            <option key={opt} value={opt}>{opt}</option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        className="btn btn-outline-secondary"
+                                        onClick={() => removeFiltersFrom(index)}
+                                    >
+                                        <i className="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            );
+                        })}
+
+                        <div className="d-grid mb-3">
+                            <button className="btn btn-outline-dark" onClick={addFilter}>Add Filters</button>
+                        </div>
+
+                        <div className="d-grid mb-3">
+                            <button className="btn btn-outline-dark" onClick={() => find(0)}>Find</button>
+                        </div>
+
+                        <hr />
+
+                        <div className="d-grid mb-3">
+                            <button className="btn btn-outline-dark" onClick={saveNotification}>
+                                Notify me of any changes in the results!
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="col-sm-7">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Link</th>
+                                    <th>Size</th>
+                                    <th>Price</th>
+                                    <th>Cond.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {searchResults && searchResults.items.map((item, i) => (
+                                    <tr key={i}>
+                                        <td>
+                                            <a href={item.link} target="_blank" rel="noreferrer">
+                                                {item.brandNameVersion}
+                                            </a>
+                                        </td>
+                                        <td>{item.size}</td>
+                                        <td>{item.price.toFixed(2)}</td>
+                                        <td>{item.condition}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                        {searchResults && (
+                            <ul className="pagination pagination-sm">
+                                {Array.from({ length: searchResults.currentPage }, (_, i) => (
+                                    <li key={i} className="page-item">
+                                        <a className="page-link" href="#" onClick={e => { e.preventDefault(); find(i); }}>{i + 1}</a>
+                                    </li>
+                                ))}
+                                <li className="page-item active">
+                                    <span className="page-link">{searchResults.currentPage + 1}</span>
+                                </li>
+                                {searchResults.nextPage && (
+                                    <li className="page-item">
+                                        <a className="page-link" href="#" onClick={e => { e.preventDefault(); find(searchResults.currentPage + 1); }}>Next</a>
+                                    </li>
+                                )}
+                            </ul>
+                        )}
+
+                        <div className="modal" ref={newsModalRef} id="newsModalDialog">
+                            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h4 className="modal-title">News</h4>
+                                        <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <p>April 2022 - shops from US added to our index</p>
+                                        <p>Nov 2023 - added special features for paid supporters</p>
+                                        <p>Mar 2024 - Product and Sub-products supported<br />
+                                            (i.e. search product=evo, subproduct=sls or subproduct=dlab)
+                                        </p>
+                                        <p>May 2024 - Notification when new items appear</p>
+                                        <p>June 2024 - Filtering by price</p>
+                                        <p>Nov 2024 - More comparison operators</p>
+                                        <p>Feb 2025 - Filtering by construction tech (5 struts / carbon)</p>
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
 }
 
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
