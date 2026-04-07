@@ -5,7 +5,7 @@ server:
 #postgres database properties
 spring :
   main:
-    banner-mode: "off"
+    banner-mode: OFF
   datasource :
     driverClassName: org.postgresql.Driver
     url: ${JDBC_DATABASE_URL}
