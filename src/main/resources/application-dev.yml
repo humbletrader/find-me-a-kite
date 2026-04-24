@@ -31,3 +31,5 @@ management:
 fmak:
   supporter:
     tokens: test1,test2,test3
+  frontend:
+    url: http://localhost:3000

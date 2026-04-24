@@ -1,3 +1,5 @@
+const API_BASE = window.API_BASE_URL || "";
+
 const { useState, useEffect, useRef } = React;
 
 const CRITERIA_OPTIONS = [
@@ -102,7 +104,7 @@ function App() {
         const postData = { "target": newName, "criteria": criteria };
 
         try {
-            const response = await fetch("/searchDistinctValues", {
+            const response = await fetch(API_BASE + "/searchDistinctValues", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(postData)
@@ -153,7 +155,7 @@ function App() {
         };
 
         try {
-            const response = await fetch("/search", {
+            const response = await fetch(API_BASE + "/search", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(postData)
@@ -181,7 +183,7 @@ function App() {
         };
 
         try {
-            const response = await fetch("/notification/save", {
+            const response = await fetch(API_BASE + "/notification/save", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(postData)

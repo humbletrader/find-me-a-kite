@@ -28,3 +28,5 @@ management:
 fmak:
   supporter:
     tokens: ${SUPPORTER_TOKENS}
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:3000}
