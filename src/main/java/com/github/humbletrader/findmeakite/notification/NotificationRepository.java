@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class NotificationRepository {
 
@@ -24,6 +26,23 @@ public class NotificationRepository {
                 notification.queryAsJson(),
                 notification.runCount()
         );
+    }
+
+    public List<NotificationDbEntity> findByEmail(String email) {
+        return jdbcTemplate.query(
+                "select id, email, query_as_json, run_count from notifications where email = ?",
+                (rs, rowNum) -> new NotificationDbEntity(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("query_as_json"),
+                        rs.getInt("run_count")
+                ),
+                email
+        );
+    }
+
+    public void deleteById(long id) {
+        jdbcTemplate.update("delete from notifications where id = ?", id);
     }
 
 }

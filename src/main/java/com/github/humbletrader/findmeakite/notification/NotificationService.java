@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class NotificationService {
 
@@ -28,7 +30,7 @@ public class NotificationService {
             var searchCriteriaAsObject = searchCriteria.getCriteria();
             try {
                 var searchCriteriaAsJson = jsonObjectMapper.writeValueAsString(searchCriteriaAsObject);
-                notificationRepo.saveNotification(new NotificationDbEntity(searchCriteria.getEmail(), searchCriteriaAsJson, 0));
+                notificationRepo.saveNotification(new NotificationDbEntity(null, searchCriteria.getEmail(), searchCriteriaAsJson, 0));
                 return new SaveNotificationResult("success", "notification successfully saved");
 
             } catch (JsonProcessingException jsonExc){
@@ -38,9 +40,21 @@ public class NotificationService {
         } else {
             return new SaveNotificationResult("fail", "user is not supporter");
         }
+    }
 
+    public List<NotificationDbEntity> listNotifications(String supporterToken, String email) {
+        if (supporterService.isSupporter(supporterToken)) {
+            return notificationRepo.findByEmail(email);
+        }
+        return List.of();
+    }
 
-
+    public SaveNotificationResult deleteNotification(String supporterToken, long id) {
+        if (supporterService.isSupporter(supporterToken)) {
+            notificationRepo.deleteById(id);
+            return new SaveNotificationResult("success", "notification deleted");
+        }
+        return new SaveNotificationResult("fail", "user is not supporter");
     }
 
 }
