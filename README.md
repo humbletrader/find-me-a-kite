@@ -1,7 +1,8 @@
 # find-me-a-kite
 
-* UI for searching kitesurfing products
+* web application to help you search for  kitesurfing products all over the web
 * rest api 
+* mobile friendly
 
 
 # live 
